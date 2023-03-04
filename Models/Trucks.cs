@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace truckCity_api.Models
 {
-    public class Trucks
+    public class Truck
     {
         [Key]
         public int Id { get; private set; }
@@ -35,7 +35,7 @@ namespace truckCity_api.Models
         [Required]
         public List<string>? CompatiblePartCodes { get; set; }
 
-        public Trucks()
+        public Truck()
         {
 
         }
