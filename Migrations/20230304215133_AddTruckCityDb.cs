@@ -29,8 +29,8 @@ namespace truckCity_api.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false, comment: "The code to identify the part"),
-                    TruckId = table.Column<int>(type: "int", nullable: false, comment: "The truck to repair where it's assigned")
+                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "The code to identify the part"),
+                    TruckId = table.Column<int>(type: "int", nullable: true, comment: "The truck to repair where it's assigned")
                 },
                 constraints: table =>
                 {
@@ -39,8 +39,7 @@ namespace truckCity_api.Migrations
                         name: "FK_Part_Truck_TruckId",
                         column: x => x.TruckId,
                         principalTable: "Truck",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
