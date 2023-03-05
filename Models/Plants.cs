@@ -11,8 +11,6 @@ namespace truckCity_api.Models
         [Key]
         public int Id { get; private set; }
 
-        [StringLength(450)]
-        [Index(IsUnique = true)]
         [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
 
@@ -25,9 +23,10 @@ namespace truckCity_api.Models
         [Required(AllowEmptyStrings = false)]
         public string Address { get; set; } //       (arg format)
 
-        public Plant()
+        public Plant(string name, string address)
         {
-
+            Name = name;
+            Address = address;
         }
     }
 }
