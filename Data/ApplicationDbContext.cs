@@ -23,6 +23,7 @@ namespace truckCity_api.Data
         }
 
         public DbSet<Truck> Trucks { get; set; }
+        public DbSet<Part> Part { get; set; }
 
     }
 }
