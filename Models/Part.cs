@@ -6,35 +6,74 @@ using System.Runtime.Serialization;
 
 namespace truckCity_api.Models
 {
-    public class Truck
+    public enum PartNames
+    {
+        Radiator,
+        BrakeGroup,
+        Engine,
+        FrontFrame,
+        Filters,
+        FuelSystem,
+        RearLights,
+        FrontLights,
+        NumberPlateLights,
+        Clutch,
+        Rim,
+        RightDoor,
+        LeftDoor,
+        Windshield
+    }
+
+    public class PartName
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public List<Part>? Parts { get; set; }
+        public PartNames Name { get; set; }
+
+        public PartName(PartNames name)
+        {
+            Name = name;
+        }
+    }
+
+    public class PartCode
+    {
+        [Key]
+        public int Id { get; set; }
+        
+        [Required, MaxLength(50), Comment("The code to identify the part")]
+        public string Code { get; set; } = null!;
+
+        public PartCode (string code)
+        {
+            Code = code;
+        }
     }
 
     public class Part
     {
         [Key]
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
         [Required]
-        public string Name { get; set; }
+        public PartNames Name { get; set; }
 
-        [Required, MaxLength(50), Comment("The code to identify the part")]
-        public string Code { get; set; }
+        [Required, Comment("The code to identify the part")]
+        public int CodeId { get; set; }
+
+        public PartCode Code { get; set; } = null!;
 
         [Comment("The truck to repair where it's assigned")]
         public int? TruckId { get; set; }
 
         public Truck? Truck { get; set; }
 
-        public Part(string name, string code, int? truckId)
+        public Part(PartNames name, int codeId, int? truckId)
         {
             Name = name;
-            Code = code;
+            CodeId = codeId;
             TruckId = truckId;
         }
     }

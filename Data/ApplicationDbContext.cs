@@ -12,7 +12,6 @@ namespace truckCity_api.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) {}
 
-        public DbSet<Truck> Truck { get; set; }
         public DbSet<Part> Part { get; set; }
     }
 }
