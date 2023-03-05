@@ -11,10 +11,8 @@ namespace truckCity_api.Models
         [Key]
         public int Id { get; private set; }
 
-        [StringLength(450)]
-        [Index(IsUnique = true)]
         [Required]
-        public string LicencePlate { get; set; }   //(correct format);
+        public string LicencePlate { get; set; } //(correct format);
 
         [Required]
         public string Brand { get; set; }
@@ -30,14 +28,16 @@ namespace truckCity_api.Models
         [Required]
         public bool IsSold { get; set; }
 
-        public List<string>? BrokenParts { get; set; }
+        public List<PartName>? BrokenParts { get; set; }
 
         [Required]
-        public List<string>? CompatiblePartCodes { get; set; }
+        public List<PartCode>? CompatiblePartCodes { get; set; }
 
-        public Truck()
+        public Truck(string brand, string licencePlate, string model)
         {
-
+            Brand = brand;
+            LicencePlate = licencePlate;
+            Model = model;
         }
     }
 }
