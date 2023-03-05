@@ -1,6 +1,8 @@
-﻿using Microsoft.SqlServer.Server;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.SqlServer.Server;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Net;
 using System.Xml;
 
@@ -22,6 +24,8 @@ namespace truckCity_api.Models
 
         [Required(AllowEmptyStrings = false)]
         public string Address { get; set; } //       (arg format)
+
+        public List<Truck>? Trucks { get; set; }
 
         public Plant(string name, string address)
         {
