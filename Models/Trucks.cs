@@ -23,7 +23,9 @@ namespace truckCity_api.Models
         [Required]
         public int Year { get; set; }
 
-        public string? CurrentPlant { get; set; } //foreign key to Plant
+        public int? PlantId { get; set; }
+
+        public Plant? CurrentPlant { get; set; } //foreign key to Plant
 
         [Required]
         public bool IsSold { get; set; }
