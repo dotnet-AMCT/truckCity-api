@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace truckCity_api.Models.DTO
 {
-    public class PartModelDTO
+    public class PartDTO
     {
         public int Id { get; }
 
@@ -20,7 +20,7 @@ namespace truckCity_api.Models.DTO
 
         public Truck? Truck { get; }
 
-        public PartModelDTO(
+        public PartDTO(
             int id, 
             PartNames name, 
             int codeId, 
