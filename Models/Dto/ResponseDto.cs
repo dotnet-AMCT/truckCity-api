@@ -3,18 +3,11 @@
     public class ResponseDto
     {
         public bool IsSuccess { get; set; } = true;
-        public object Result { get; set; }
 
-        public string DisplayMessage { get; set; }
+        public object? Result { get; set; } = null;
 
-        public List<string> ErrorsMessages { get; set; }
+        public string DisplayMessage { get; set; } = string.Empty;
 
-        public ResponseDto (bool isSuccess, object result, string displayMessage, List<string> errorsMessages)
-        {
-            IsSuccess = isSuccess;
-            Result = result;
-            DisplayMessage = displayMessage;
-            ErrorsMessages = errorsMessages;
-        }
+        public List<string> ErrorsMessages { get; set; } = new List<string>();
     }
 }
