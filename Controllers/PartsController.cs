@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using truckCity_api.Data;
+using truckCity_api.Repository;
 using truckCity_api.Models;
+using truckCity_api.Models.DTO;
+using System.Linq.Expressions;
 
 namespace truckCity_api.Controllers
 {
@@ -14,95 +16,155 @@ namespace truckCity_api.Controllers
     [ApiController]
     public class PartsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPartRepository _partRepository;
+        protected ResponseDTO _responseDTO;
 
-        public PartsController(ApplicationDbContext context)
+        public PartsController(
+            IPartRepository partRepository)
         {
-            _context = context;
+            _partRepository = partRepository;
+            _responseDTO = new ResponseDTO();
         }
 
         // GET: api/Parts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Part>>> GetPart()
+        public async Task<ActionResult<ResponseDTO>> GetPart()
         {
-            return await _context.Part.ToListAsync();
+            try
+            {
+                var partList = await _partRepository.GetPart();
+                _responseDTO.Result = partList;
+                _responseDTO.DisplayMessage = "LIST OF PARTS";
+                _responseDTO.IsSuccess = true;
+            }
+            catch (Exception exception)
+            {
+                _responseDTO.IsSuccess = false;
+                _responseDTO.ErrorMessages = new List<string>{ exception.ToString() };
+            }
+            
+            return Ok(_responseDTO);
         }
 
         // GET: api/Parts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Part>> GetPart(int id)
+        public async Task<ActionResult<ResponseDTO>> GetPart(int id)
         {
-            var part = await _context.Part.FindAsync(id);
-
-            if (part == null)
+            try
             {
-                return NotFound();
+                var part = await _partRepository.GetPart(id);
+                _responseDTO.Result = part;
+                _responseDTO.IsSuccess = _responseDTO.Result != null;
+            }
+            catch (Exception exception) 
+            {
+                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
             }
 
-            return part;
+            if (!_responseDTO.IsSuccess) 
+            {
+                _responseDTO.DisplayMessage = "PART NOT FOUND";
+                return NotFound(_responseDTO);
+            }
+            _responseDTO.DisplayMessage = "PART INFORMATION";
+
+            return Ok(_responseDTO);
         }
 
         // PUT: api/Parts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPart(int id, Part part)
+        public async Task<IActionResult> PutPart(int id, PartDTO part)
         {
             if (id != part.Id)
             {
+                _responseDTO.Result = null;
+                _responseDTO.IsSuccess = false;
+                _responseDTO.DisplayMessage = "BAD REQUEST: THE Id DOESN'T MATCH THE Part.Id";
                 return BadRequest();
             }
 
-            _context.Entry(part).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                PartDTO partResult = await _partRepository.PostPutPart(part);
+                _responseDTO.Result = partResult;
+                _responseDTO.IsSuccess = true;
+                _responseDTO.DisplayMessage = "PART UPDATED";
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception exception)
             {
-                if (!PartExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                _responseDTO.Result = null;
+                _responseDTO.IsSuccess = false;
+                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE UPDATING THE PART";
+                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
             }
 
-            return NoContent();
+            if (!_responseDTO.IsSuccess)
+            {
+                return BadRequest(_responseDTO);
+            }
+
+            return Ok(_responseDTO);
         }
 
         // POST: api/Parts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Part>> PostPart(Part part)
+        public async Task<ActionResult> PostPart(PartDTO part)
         {
-            _context.Part.Add(part);
-            await _context.SaveChangesAsync();
+            try
+            {
+                PartDTO partResult = await _partRepository.PostPutPart(part);
+                if (partResult != null)
+                {
+                    _responseDTO.Result = partResult;
+                    _responseDTO.IsSuccess = true;
+                    _responseDTO.DisplayMessage = "PART ADDED";
+                }
+            }
+            catch(Exception exception)
+            {
+                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDTO.IsSuccess = false;
+                _responseDTO.DisplayMessage = "AN ERROR OCURRED WHILE ADDING THE PART";
+            }
 
-            return CreatedAtAction("GetPart", new { id = part.Id }, part);
+            if (!_responseDTO.IsSuccess)
+            {
+                return BadRequest(_responseDTO);
+            }
+
+            return Ok(_responseDTO);
         }
 
         // DELETE: api/Parts/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePart(int id)
         {
-            var part = await _context.Part.FindAsync(id);
-            if (part == null)
+            try
             {
-                return NotFound();
+                bool partIsDeleted = await _partRepository.DeletePart(id);
+                if (partIsDeleted)
+                {
+                    _responseDTO.Result = partIsDeleted;
+                    _responseDTO.IsSuccess = true;
+                    _responseDTO.DisplayMessage = "PART DELETED SUCCESFULLY";
+                }
+            }
+            catch (Exception exception)
+            {
+                _responseDTO.Result = false;
+                _responseDTO.IsSuccess = false;
+                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE TRYING TO DELETE THE PART";
             }
 
-            _context.Part.Remove(part);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool PartExists(int id)
-        {
-            return _context.Part.Any(e => e.Id == id);
+            if (_responseDTO.IsSuccess is false)
+            {
+                return BadRequest(_responseDTO);
+            }
+            
+            return Ok(_responseDTO);
         }
     }
 }

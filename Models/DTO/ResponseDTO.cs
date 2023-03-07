@@ -10,7 +10,7 @@ namespace truckCity_api.Models.DTO
     {
         public bool IsSuccess { get; set; } = true;
 
-        public object? Result { get; set; }
+        public object? Result { get; set; } = null;
         
         public string DisplayMessage { get; set; } = string.Empty;
 

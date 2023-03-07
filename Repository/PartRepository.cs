@@ -20,21 +20,23 @@ namespace truckCity_api.Repository
         public async Task<bool> DeletePart(int id)
         {
             var operationResult = true;
-            var part = await _db.Part.FindAsync(id);
-
-            if (part == null)
-            {
-                operationResult = false;
-            }
-
+            
             try
             {
-                _db.Part.Remove(part);
-                await _db.SaveChangesAsync();
+                var part = await _db.Part.FindAsync(id);
+                if (part != null)
+                {
+                    _db.Part.Remove(part);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    operationResult = false;
+                }
             }
             catch (Exception)
             {
-                operationResult= false;
+                operationResult = false;
             }
 
             return operationResult;
@@ -70,7 +72,7 @@ namespace truckCity_api.Repository
             
             await _db.SaveChangesAsync();
 
-            return partDTO;
+            return _mapper.Map<PartDTO>(part);
         }
     }
 }
