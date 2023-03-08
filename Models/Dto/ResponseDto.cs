@@ -8,6 +8,6 @@
 
         public string DisplayMessage { get; set; } = string.Empty;
 
-        public List<string> ErrorsMessages { get; set; } = new List<string>();
+        public List<string> ErrorMessages { get; set; } = new List<string>();
     }
 }

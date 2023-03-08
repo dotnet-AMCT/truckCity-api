@@ -33,12 +33,12 @@ namespace truckCity_api.Controllers
             {
                 var truckDtoList = await _iTruckRepository.GetTrucks();
                 _responseDto.Result = truckDtoList;
-                _responseDto.DisplayMessage = "Truck's list";
+                _responseDto.DisplayMessage = "Truck list";
             }
             catch (Exception e)
             {
                 _responseDto.IsSuccess = false;
-                _responseDto.ErrorsMessages = new List<string> { e.ToString() };
+                _responseDto.ErrorMessages = new List<string> { e.ToString() };
             }
             return Ok(_responseDto);
         }
@@ -55,7 +55,7 @@ namespace truckCity_api.Controllers
                 return NotFound(_responseDto);
             }
             _responseDto.Result = truck;
-            _responseDto.DisplayMessage = "Truck's Information";
+            _responseDto.DisplayMessage = "Truck Information";
             return Ok(_responseDto);
         }
 
@@ -75,7 +75,7 @@ namespace truckCity_api.Controllers
             {
                 _responseDto.IsSuccess = false;
                 _responseDto.DisplayMessage = "Failed to update truck register";
-                _responseDto.ErrorsMessages = new List<string> { e.ToString() };
+                _responseDto.ErrorMessages = new List<string> { e.ToString() };
                 return BadRequest(_responseDto);
             }
         }
@@ -95,7 +95,7 @@ namespace truckCity_api.Controllers
             {
                 _responseDto.IsSuccess = false;
                 _responseDto.DisplayMessage = "Failed to create truck register";
-                _responseDto.ErrorsMessages = new List<string> { e.ToString() };
+                _responseDto.ErrorMessages = new List<string> { e.ToString() };
                 return BadRequest(_responseDto);
             }
         }
@@ -123,7 +123,7 @@ namespace truckCity_api.Controllers
             catch (Exception e)
             {
                 _responseDto.IsSuccess = false;
-                _responseDto.ErrorsMessages = new List<string> { e.ToString() };
+                _responseDto.ErrorMessages = new List<string> { e.ToString() };
                 return BadRequest(_responseDto);
             }
         }

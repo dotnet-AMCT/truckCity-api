@@ -30,16 +30,18 @@ namespace truckCity_api.Models
         [Required]
         public bool IsSold { get; set; }
 
-        public List<string?> BrokenParts { get; set; } = new List<string?>();
+        public List<string>? BrokenParts { get; set; }
 
         [Required]
-        public List<string?> CompatiblePartCodes { get; set; } = new List<string?>();
+        public List<string>? CompatiblePartCodes { get; set; }
 
-        public Truck(string brand, string licencePlate, string model)
+        public Truck(string brand, string licencePlate, string model, List<string>? brokenParts, List<string>? compatiblePartCodes)
         {
             Brand = brand;
             LicencePlate = licencePlate;
             Model = model;
+            BrokenParts = brokenParts;
+            CompatiblePartCodes = compatiblePartCodes;
         }
     }
 }
