@@ -12,15 +12,13 @@
 
         public int Year { get; set; }
 
-        public int? PlantId { get; set; }
-
-        public Plant? CurrentPlant { get; set; } //foreign key to Plant
+        public string? CurrentPlant { get; set; } //foreign key to Plant
 
         public bool IsSold { get; set; }
 
-        public List<PartName>? BrokenParts { get; set; }
+        public List<string>? BrokenParts { get; set; }
 
-        public List<PartCode>? CompatiblePartCodes { get; set; }
+        public List<string>? CompatiblePartCodes { get; set; }
 
         public TruckDto(string brand, string licencePlate, string model)
         {
@@ -30,4 +28,3 @@
         }
     }
 }
-

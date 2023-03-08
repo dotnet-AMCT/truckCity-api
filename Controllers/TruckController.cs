@@ -12,7 +12,7 @@ using truckCity_api.Repositories;
 
 namespace truckCity_api.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TruckController : ControllerBase
     {
@@ -25,7 +25,7 @@ namespace truckCity_api.Controllers
             _responseDto = new ResponseDto();
         }
 
-        // GET: Truck
+        // GET: api/Truck
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Truck>>> GetTrucks()
         {
@@ -43,7 +43,7 @@ namespace truckCity_api.Controllers
             return Ok(_responseDto);
         }
 
-        // GET: Truck/5
+        // GET: api/Truck/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Truck>> GetTruck(int id)
         {
@@ -59,7 +59,7 @@ namespace truckCity_api.Controllers
             return Ok(_responseDto);
         }
 
-        // PUT: Truck/5
+        // PUT: api/Truck/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTruck(int id, TruckDto truckDto)
@@ -76,68 +76,56 @@ namespace truckCity_api.Controllers
                 _responseDto.IsSuccess = false;
                 _responseDto.DisplayMessage = "Failed to update truck register";
                 _responseDto.ErrorsMessages = new List<string> { e.ToString() };
+                return BadRequest(_responseDto);
             }
-
-
-
-
-            //
-            if (id != truck.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(truck).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TruckExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
         }
 
-        // POST: Truck
+        // POST: api/Truck
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Truck>> PostTruck(Truck truck)
+        public async Task<ActionResult<Truck>> PostTruck(TruckDto truckDto)
         {
-            _context.Trucks.Add(truck);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTruck", new { id = truck.Id }, truck);
+            try
+            {
+                TruckDto model = await _iTruckRepository.CreateUpdate(truckDto);
+                _responseDto.Result = model;
+                return CreatedAtAction("GetTruck", new { id = model.Id }, _responseDto);
+            }
+            catch (Exception e)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.DisplayMessage = "Failed to create truck register";
+                _responseDto.ErrorsMessages = new List<string> { e.ToString() };
+                return BadRequest(_responseDto);
+            }
         }
 
-        // DELETE: Truck/5
+        // DELETE: api/Truck/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTruck(int id)
         {
-            var truck = await _context.Trucks.FindAsync(id);
-            if (truck == null)
+            try
             {
-                return NotFound();
+                bool IsDeleted = await _iTruckRepository.DeleteTruck(id);
+                if (IsDeleted)
+                {
+                    _responseDto.Result = IsDeleted;
+                    _responseDto.DisplayMessage = "Truck register successfully deleted";
+                    return Ok(_responseDto);
+                }
+                else
+                {
+                    _responseDto.IsSuccess = false;
+                    _responseDto.DisplayMessage = "Failed to delete truck register";
+                    return BadRequest(_responseDto);
+                }
             }
-
-            _context.Trucks.Remove(truck);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool TruckExists(int id)
-        {
-            return _context.Trucks.Any(e => e.Id == id);
+            catch (Exception e)
+            {
+                _responseDto.IsSuccess = false;
+                _responseDto.ErrorsMessages = new List<string> { e.ToString() };
+                return BadRequest(_responseDto);
+            }
         }
     }
 }

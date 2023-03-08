@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using truckCity_api.Models;
 
 namespace truckCity_api.Data
-{	
-	public class ApplicationDbContext : DbContext
+{
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
@@ -22,6 +22,36 @@ namespace truckCity_api.Data
             builder.Entity<Truck>().HasIndex(u => u.LicencePlate).IsUnique();
             builder.Entity<Plant>().HasIndex(u => u.Name).IsUnique();
             builder.Entity<Plant>().HasIndex(u => u.Address).IsUnique();
+
+            builder.Entity<Truck>(x =>
+            {
+                x.HasKey(y => y.Id);
+                x.Property(y => y.BrokenParts)
+                    .HasConversion(
+                        from => string.Join(";", from),
+                        to => string.IsNullOrEmpty(to) ? new List<string>() : to.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList(),
+                        new ValueComparer<List<string>>(
+                            (c1, c2) => c1.SequenceEqual(c2),
+                            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                            c => c.ToList()
+                    )
+                );
+            });
+
+            builder.Entity<Truck>(x =>
+            {
+                x.HasKey(y => y.Id);
+                x.Property(y => y.CompatiblePartCodes)
+                    .HasConversion(
+                        from => string.Join(";", from),
+                        to => string.IsNullOrEmpty(to) ? new List<string>() : to.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList(),
+                        new ValueComparer<List<string>>(
+                            (c1, c2) => c1.SequenceEqual(c2),
+                            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                            c => c.ToList()
+                    )
+                );
+            });
 
         }
 
