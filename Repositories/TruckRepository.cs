@@ -21,14 +21,15 @@ namespace truckCity_api.Repositories
         public async Task<TruckDto> CreateUpdate(TruckDto truckDto)
         {
             Truck truck = _mapper.Map<TruckDto, Truck>(truckDto);
-            if (truck.Id > 0) 
-            {
-                _context.Trucks.Update(truck);
-            }
-            else
-            {
-                await _context.Trucks.AddAsync(truck);
-            }
+            //if (truck.Id > 0)
+            //{
+            //    _context.Trucks.Update(truck);
+            //}
+            //else
+            //{
+            //    await _context.Trucks.AddAsync(truck);
+            //}
+            await _context.Trucks.AddAsync(truck); //
             await _context.SaveChangesAsync();
             return _mapper.Map<Truck, TruckDto>(truck);
         }
