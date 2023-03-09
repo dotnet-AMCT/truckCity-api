@@ -1,5 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Drawing;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
 using truckCity_api.Data;
 using truckCity_api.Models;
 using truckCity_api.Models.DTO;
@@ -9,9 +14,9 @@ namespace truckCity_api.Repository
     public class PartRepository : IPartRepository
     {
         private readonly ApplicationDbContext _db;
-        private readonly IMapper _mapper;
+        private IMapper _mapper;
 
-        public PartRepository(ApplicationDbContext db, Mapper mapper)
+        public PartRepository(ApplicationDbContext db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
@@ -56,23 +61,41 @@ namespace truckCity_api.Repository
             return _mapper.Map<PartDTO>(part);
         }
 
-        public async Task<PartDTO> PostPutPart(PartDTO partDTO)
+        public async Task<PartDTO> CreatePart(PartDTO partDTO)
         {
             var part = _mapper.Map<Part>(partDTO);
-
-            // If it's an update
-            if (part.Id > 0)
-            {
-                _db.Part.Update(part);
-            }
-            else
-            {
-                await _db.Part.AddAsync(part);
-            }
-            
+            await _db.Part.AddAsync(part);
             await _db.SaveChangesAsync();
 
             return _mapper.Map<PartDTO>(part);
+        }
+
+        public async Task<PartDTO?> UpdatePart(int id, UpdatePartDTO updatePartDTO)
+        {
+            PartDTO? partDTO = null;
+            Part? part = await _db.Part.FindAsync(id);
+
+            if (part != null)
+            {
+                if (updatePartDTO.Name != null)
+                {
+                    part.Name = updatePartDTO.Name;
+                }
+                if (updatePartDTO.Code != null)
+                {
+                    part.Code = updatePartDTO.Code;
+                }
+                if (updatePartDTO.TruckId != null)
+                {
+                    part.TruckId = updatePartDTO.TruckId;
+                }
+
+                await _db.SaveChangesAsync();
+
+                partDTO = _mapper.Map<PartDTO>(part);
+            }
+
+            return partDTO;
         }
     }
 }

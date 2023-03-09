@@ -10,11 +10,9 @@ namespace truckCity_api.Repository
     public interface IPartRepository
     {
         Task<IEnumerable<PartDTO>> GetPart();
-
         Task<PartDTO> GetPart(int id);
-
-        Task<PartDTO> PostPutPart(PartDTO partDTO);
-
+        Task<PartDTO> CreatePart(PartDTO partDTO);
+        Task<PartDTO?> UpdatePart(int id, UpdatePartDTO partDTO);
         Task<bool> DeletePart(int id);
     }
 }

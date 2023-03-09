@@ -74,22 +74,12 @@ namespace truckCity_api.Controllers
         // PUT: api/Parts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPart(int id, PartDTO part)
+        public async Task<IActionResult> PutPart(int id, UpdatePartDTO partFields)
         {
-            if (id != part.Id)
-            {
-                _responseDTO.Result = null;
-                _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "BAD REQUEST: THE Id DOESN'T MATCH THE Part.Id";
-                return BadRequest();
-            }
-
             try
             {
-                PartDTO partResult = await _partRepository.PostPutPart(part);
+                PartDTO? partResult = await _partRepository.UpdatePart(id, partFields);
                 _responseDTO.Result = partResult;
-                _responseDTO.IsSuccess = true;
-                _responseDTO.DisplayMessage = "PART UPDATED";
             }
             catch (Exception exception)
             {
@@ -97,6 +87,17 @@ namespace truckCity_api.Controllers
                 _responseDTO.IsSuccess = false;
                 _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE UPDATING THE PART";
                 _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+            }
+            
+            if (_responseDTO.Result != null)
+            {
+                _responseDTO.IsSuccess = true;
+                _responseDTO.DisplayMessage = "PART UPDATED";
+            }
+            else
+            {
+                _responseDTO.IsSuccess = false;
+                _responseDTO.DisplayMessage = "THE PartId WAS NOT VALID";
             }
 
             if (!_responseDTO.IsSuccess)
@@ -114,7 +115,7 @@ namespace truckCity_api.Controllers
         {
             try
             {
-                PartDTO partResult = await _partRepository.PostPutPart(part);
+                PartDTO partResult = await _partRepository.CreatePart(part);
                 if (partResult != null)
                 {
                     _responseDTO.Result = partResult;

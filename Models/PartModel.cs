@@ -6,7 +6,39 @@ using System.Runtime.Serialization;
 
 namespace truckCity_api.Models
 {
-    public enum PartNames
+    public class Part
+    {
+        [Key]
+        public Guid Id { get; private set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        [
+            Required,
+            MaxLength(200),
+            MinLength(1),
+            RegularExpression(
+                @"([A-Za-z]+([0-9]+[A-Za-z]+)+)", 
+                ErrorMessage = "Use only numbers, lowercase and uppercase."
+            ),
+            Comment("The code to identify the part")
+        ]
+        public string Code { get; set; }
+
+        public int? TruckId { get; set; }
+
+        [Comment("The truck to repair where it's assigned")]
+        public Truck? Truck { get; set; }
+
+        public Part(string name, string code)
+        {
+            Name = name;
+            Code = code;
+        }
+    }
+
+    /*public enum PartNames
     {
         Radiator,
         BrakeGroup,
@@ -50,31 +82,5 @@ namespace truckCity_api.Models
         {
             Code = code;
         }
-    }
-
-    public class Part
-    {
-        [Key]
-        public int Id { get; private set; }
-
-        [Required]
-        public PartNames Name { get; set; }
-
-        public int CodeId { get; set; }
-
-        [Required, Comment("The code to identify the part")]
-        public PartCode Code { get; set; } = null!;
-
-        public int? TruckId { get; set; }
-
-        [Comment("The truck to repair where it's assigned")]
-        public Truck? Truck { get; set; }
-
-        public Part(PartNames name, int codeId, int? truckId)
-        {
-            Name = name;
-            CodeId = codeId;
-            TruckId = truckId;
-        }
-    }
+    }*/
 }
