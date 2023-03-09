@@ -17,6 +17,10 @@ namespace truckCity_api
             {
                 config.CreateMap<PartDTO, Part>();
                 config.CreateMap<Part, PartDTO >();
+                config.CreateMap<CreatePartDTO, Part>();
+                config.CreateMap<Part, CreatePartDTO>();
+                config.CreateMap<UpdatePartDTO, Part>();
+                config.CreateMap<Part, UpdatePartDTO>();
             }
             );
 

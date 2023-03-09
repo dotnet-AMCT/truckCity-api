@@ -22,7 +22,7 @@ namespace truckCity_api.Repository
             _mapper = mapper;
         }
 
-        public async Task<bool> DeletePart(int id)
+        public async Task<bool> DeletePart(Guid id)
         {
             var operationResult = true;
             
@@ -54,23 +54,23 @@ namespace truckCity_api.Repository
             return _mapper.Map<List<PartDTO>>(partsList);
         }
 
-        public async Task<PartDTO> GetPart(int id)
+        public async Task<PartDTO> GetPart(Guid id)
         {
             var part = await _db.Part.FindAsync(id);
 
             return _mapper.Map<PartDTO>(part);
         }
 
-        public async Task<PartDTO> CreatePart(PartDTO partDTO)
+        public async Task<PartDTO> CreatePart(CreatePartDTO createPartDTO)
         {
-            var part = _mapper.Map<Part>(partDTO);
+            var part = _mapper.Map<Part>(createPartDTO);
             await _db.Part.AddAsync(part);
             await _db.SaveChangesAsync();
 
             return _mapper.Map<PartDTO>(part);
         }
 
-        public async Task<PartDTO?> UpdatePart(int id, UpdatePartDTO updatePartDTO)
+        public async Task<PartDTO?> UpdatePart(Guid id, UpdatePartDTO updatePartDTO)
         {
             PartDTO? partDTO = null;
             Part? part = await _db.Part.FindAsync(id);

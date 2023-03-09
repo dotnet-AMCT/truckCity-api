@@ -26,7 +26,7 @@ namespace truckCity_api.Models
         ]
         public string Code { get; set; }
 
-        public int? TruckId { get; set; }
+        public Guid? TruckId { get; set; }
 
         [Comment("The truck to repair where it's assigned")]
         public Truck? Truck { get; set; }

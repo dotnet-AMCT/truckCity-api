@@ -9,7 +9,7 @@ namespace truckCity_api.Models
     public class Truck
     {
         [Key]
-        public int Id { get; private set; }
+        public Guid Id { get; private set; }
 
         [Required]
         public string LicencePlate { get; set; } //(correct format);

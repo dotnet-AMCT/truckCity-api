@@ -48,7 +48,7 @@ namespace truckCity_api.Controllers
 
         // GET: api/Parts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseDTO>> GetPart(int id)
+        public async Task<ActionResult<ResponseDTO>> GetPart(Guid id)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace truckCity_api.Controllers
         // PUT: api/Parts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPart(int id, UpdatePartDTO partFields)
+        public async Task<IActionResult> PutPart(Guid id, UpdatePartDTO partFields)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace truckCity_api.Controllers
         // POST: api/Parts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult> PostPart(PartDTO part)
+        public async Task<ActionResult> PostPart(CreatePartDTO part)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace truckCity_api.Controllers
 
         // DELETE: api/Parts/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePart(int id)
+        public async Task<IActionResult> DeletePart(Guid id)
         {
             try
             {
