@@ -97,11 +97,7 @@ namespace truckCity_api.Controllers
             else
             {
                 _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "THE PartId WAS NOT VALID";
-            }
-
-            if (!_responseDTO.IsSuccess)
-            {
+                _responseDTO.DisplayMessage = "INVALID PARTID OR PART";
                 return BadRequest(_responseDTO);
             }
 
@@ -115,12 +111,17 @@ namespace truckCity_api.Controllers
         {
             try
             {
-                PartDTO partResult = await _partRepository.CreatePart(part);
+                PartDTO? partResult = await _partRepository.CreatePart(part);
+                _responseDTO.Result = partResult;
                 if (partResult != null)
                 {
-                    _responseDTO.Result = partResult;
                     _responseDTO.IsSuccess = true;
                     _responseDTO.DisplayMessage = "PART ADDED";
+                }
+                else
+                {
+                    _responseDTO.IsSuccess = false;
+                    _responseDTO.DisplayMessage = "INVALID PART";
                 }
             }
             catch(Exception exception)

@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using static NuGet.Packaging.PackagingConstants;
+using System.Runtime.Intrinsics.Arm;
 
 namespace truckCity_api.Models
 {
@@ -37,50 +40,4 @@ namespace truckCity_api.Models
             Code = code;
         }
     }
-
-    /*public enum PartNames
-    {
-        Radiator,
-        BrakeGroup,
-        Engine,
-        FrontFrame,
-        Filters,
-        FuelSystem,
-        RearLights,
-        FrontLights,
-        NumberPlateLights,
-        Clutch,
-        Rim,
-        RightDoor,
-        LeftDoor,
-        Windshield
-    }
-
-    public class PartName
-    {
-        [Key]
-        public int Id { get; set; }
-
-        [Required]
-        public PartNames Name { get; set; }
-
-        public PartName(PartNames name)
-        {
-            Name = name;
-        }
-    }
-
-    public class PartCode
-    {
-        [Key]
-        public int Id { get; set; }
-        
-        [Required, MaxLength(50), Comment("The code to identify the part")]
-        public string Code { get; set; } = null!;
-
-        public PartCode (string code)
-        {
-            Code = code;
-        }
-    }*/
 }

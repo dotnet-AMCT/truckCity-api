@@ -11,7 +11,7 @@ namespace truckCity_api.Repository
     {
         Task<IEnumerable<PartDTO>> GetPart();
         Task<PartDTO> GetPart(Guid id);
-        Task<PartDTO> CreatePart(CreatePartDTO createPartDTO);
+        Task<PartDTO?> CreatePart(CreatePartDTO createPartDTO);
         Task<PartDTO?> UpdatePart(Guid id, UpdatePartDTO updatePartDTO);
         Task<bool> DeletePart(Guid id);
     }

@@ -13,6 +13,21 @@ namespace truckCity_api.Repository
 {
     public class PartRepository : IPartRepository
     {
+        private readonly List<string> PartNames = new List<string> { "Radiator",
+                                                                    "Brake group",
+                                                                    "Engine",
+                                                                    "Front frame",
+                                                                    "Filters",
+                                                                    "Fuel system",
+                                                                    "Rear lights",
+                                                                    "Front lights",
+                                                                    "Number plate lights",
+                                                                    "Clutch",
+                                                                    "Rim",
+                                                                    "Right door",
+                                                                    "Left door",
+                                                                    "Windshield" };
+
         private readonly ApplicationDbContext _db;
         private IMapper _mapper;
 
@@ -20,31 +35,6 @@ namespace truckCity_api.Repository
         {
             _db = db;
             _mapper = mapper;
-        }
-
-        public async Task<bool> DeletePart(Guid id)
-        {
-            var operationResult = true;
-            
-            try
-            {
-                var part = await _db.Part.FindAsync(id);
-                if (part != null)
-                {
-                    _db.Part.Remove(part);
-                    await _db.SaveChangesAsync();
-                }
-                else
-                {
-                    operationResult = false;
-                }
-            }
-            catch (Exception)
-            {
-                operationResult = false;
-            }
-
-            return operationResult;
         }
 
         public async Task<IEnumerable<PartDTO>> GetPart()
@@ -61,21 +51,28 @@ namespace truckCity_api.Repository
             return _mapper.Map<PartDTO>(part);
         }
 
-        public async Task<PartDTO> CreatePart(CreatePartDTO createPartDTO)
+        public async Task<PartDTO?> CreatePart(CreatePartDTO createPartDTO)
         {
-            var part = _mapper.Map<Part>(createPartDTO);
-            await _db.Part.AddAsync(part);
-            await _db.SaveChangesAsync();
+            Part? part = null;
+            if (PartNames.Contains(createPartDTO.Name))
+            {
+                part = _mapper.Map<Part>(createPartDTO);
+                await _db.Part.AddAsync(part);
+                await _db.SaveChangesAsync();
+            }
 
-            return _mapper.Map<PartDTO>(part);
+            PartDTO? partDTO = part!=null ? _mapper.Map<PartDTO>(part) : null;
+
+            return partDTO;
         }
 
         public async Task<PartDTO?> UpdatePart(Guid id, UpdatePartDTO updatePartDTO)
         {
             PartDTO? partDTO = null;
             Part? part = await _db.Part.FindAsync(id);
+            bool is_valid_new_name = updatePartDTO.Name != null ? PartNames.Contains(updatePartDTO.Name) : false;
 
-            if (part != null)
+            if (part != null && is_valid_new_name)
             {
                 if (updatePartDTO.Name != null)
                 {
@@ -96,6 +93,31 @@ namespace truckCity_api.Repository
             }
 
             return partDTO;
+        }
+
+        public async Task<bool> DeletePart(Guid id)
+        {
+            var operationResult = true;
+
+            try
+            {
+                var part = await _db.Part.FindAsync(id);
+                if (part != null)
+                {
+                    _db.Part.Remove(part);
+                    await _db.SaveChangesAsync();
+                }
+                else
+                {
+                    operationResult = false;
+                }
+            }
+            catch (Exception)
+            {
+                operationResult = false;
+            }
+
+            return operationResult;
         }
     }
 }
