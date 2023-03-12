@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using NuGet.Protocol.Core.Types;
 using truckCity_api.Data;
 using truckCity_api.Models;
 using truckCity_api.Models.Dto;
 using truckCity_api.Repositories;
+using truckCity_api.Utilities;
 
 namespace truckCity_api.Controllers
 {
@@ -17,115 +21,95 @@ namespace truckCity_api.Controllers
     public class TruckController : ControllerBase
     {
         private readonly ITruckRepository _iTruckRepository;
-        protected ResponseDto _responseDto;
 
         public TruckController(ITruckRepository iTruckRepository)
         {
             _iTruckRepository = iTruckRepository;
-            _responseDto = new ResponseDto();
         }
 
         // GET: api/Truck
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Truck>>> GetTrucks()
+        public async Task<IEnumerable<TruckDto>> GetTrucksAsync()
         {
-            try
-            {
-                var truckDtoList = await _iTruckRepository.GetTrucks();
-                _responseDto.Result = truckDtoList;
-                _responseDto.DisplayMessage = "Truck list";
-            }
-            catch (Exception e)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.ErrorMessages = new List<string> { e.ToString() };
-            }
-            return Ok(_responseDto);
+            var trucks = (await _iTruckRepository.GetTrucksAsync())
+                        .Select(truck => truck.AsDto());
+
+            return trucks;
         }
 
+        [ActionName("GetTruckAsync")]
         // GET: api/Truck/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Truck>> GetTruck(int id)
+        public async Task<ActionResult<TruckDto>> GetTruckAsync(Guid id)
         {
-            var truck = await _iTruckRepository.GetTruckById(id);
-            if (truck == null)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.DisplayMessage = "This Truck does not exist";
-                return NotFound(_responseDto);
-            }
-            _responseDto.Result = truck;
-            _responseDto.DisplayMessage = "Truck Information";
-            return Ok(_responseDto);
-        }
+            var truck = await _iTruckRepository.GetTruckAsync(id);
 
-        // PUT: api/Truck/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTruck(int id, TruckDto truckDto)
-        {
-            try
+            if (truck is null)
             {
-                TruckDto model = await _iTruckRepository.CreateUpdate(truckDto);
-                _responseDto.Result = model;
-                return Ok(_responseDto);
+                return NotFound();
+            }
 
-            }
-            catch (Exception e)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.DisplayMessage = "Failed to update truck register";
-                _responseDto.ErrorMessages = new List<string> { e.ToString() };
-                return BadRequest(_responseDto);
-            }
+            return truck.AsDto();
         }
 
         // POST: api/Truck
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Truck>> PostTruck(TruckDto truckDto)
+        public async Task<ActionResult<TruckDto>> CreateItemAsync(CreateTruckDto truckDto)
         {
-            try
+            Truck truck = new()
             {
-                TruckDto model = await _iTruckRepository.CreateUpdate(truckDto);
-                _responseDto.Result = model;
-                return CreatedAtAction("GetTruck", new { id = model.Id }, _responseDto);
-            }
-            catch (Exception e)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.DisplayMessage = "Failed to create truck register";
-                _responseDto.ErrorMessages = new List<string> { e.ToString() };
-                return BadRequest(_responseDto);
-            }
+                Id = Guid.NewGuid(),
+                LicencePlate = truckDto.LicencePlate,
+                Brand = truckDto.Brand,
+                Model = truckDto.Model,
+                Year = truckDto.Year,
+                Kilometres = truckDto.Kilometres,
+                IsSold = truckDto.IsSold,
+                BrokenParts = truckDto.BrokenParts,
+                CompatiblePartCodes = truckDto.CompatiblePartCodes,
+                Plant = null //import repository plant
+            };
+
+            await _iTruckRepository.CreateTruckAsync(truck);
+
+            return CreatedAtAction(nameof(GetTruckAsync), new { id = truck.Id }, truck.AsDto());
         }
 
-        // DELETE: api/Truck/5
+        // PUT: api/Truck/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPut("{id}")]
+        //public async Task<ActionResult> UpdateTruckAsync(Guid id, UpdateTruckDto truckDto)
+        //{
+        //    var existingTruck = await _iTruckRepository.GetTruckAsync(id);
+
+        //    if (existingTruck is null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    existingTruck.Name = truckDto.Name;
+        //    existingTruck.Price = truckDto.Price;
+
+        //    await _iTruckRepository.UpdateTruckAsync(existingTruck);
+
+        //    return NoContent();
+        //}
+
+        //// DELETE: api/Truck/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTruck(int id)
+        public async Task<ActionResult> DeleteTruckAsync(Guid id)
         {
-            try
+            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
+
+            if (existingTruck is null)
             {
-                bool IsDeleted = await _iTruckRepository.DeleteTruck(id);
-                if (IsDeleted)
-                {
-                    _responseDto.Result = IsDeleted;
-                    _responseDto.DisplayMessage = "Truck register successfully deleted";
-                    return Ok(_responseDto);
-                }
-                else
-                {
-                    _responseDto.IsSuccess = false;
-                    _responseDto.DisplayMessage = "Failed to delete truck register";
-                    return BadRequest(_responseDto);
-                }
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                _responseDto.IsSuccess = false;
-                _responseDto.ErrorMessages = new List<string> { e.ToString() };
-                return BadRequest(_responseDto);
-            }
+
+            await _iTruckRepository.DeleteTruckAsync(id);
+
+            return NoContent();
         }
     }
 }

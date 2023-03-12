@@ -9,7 +9,7 @@ namespace truckCity_api.Models
     public class Truck
     {
         [Key]
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string LicencePlate { get; set; } //(correct format);
@@ -26,24 +26,22 @@ namespace truckCity_api.Models
         [Required]
         public uint Kilometres { get; set; }
 
-        public Guid? PlantId { get; set; }
-
-        public Plant? CurrentPlant { get; set; } //foreign key to Plant
+        public Plant? Plant { get; set; } = null; //foreign key to Plant
 
         [Required]
         public bool IsSold { get; set; }
 
-        public List<string>? BrokenParts { get; set; }
+        public List<string>? BrokenParts { get; set; } = null;
 
-        public List<string>? CompatiblePartCodes { get; set; }
+        public List<string>? CompatiblePartCodes { get; set; } = null;
 
-        public Truck(string brand, string licencePlate, string model, List<string>? brokenParts, List<string>? compatiblePartCodes)
-        {
-            Brand = brand;
-            LicencePlate = licencePlate;
-            Model = model;
-            BrokenParts = brokenParts;
-            CompatiblePartCodes = compatiblePartCodes;
-        }
+        //public Truck(string brand, string licencePlate, string model, List<string>? brokenParts, List<string>? compatiblePartCodes)
+        //{
+        //    Brand = brand;
+        //    LicencePlate = licencePlate;
+        //    Model = model;
+        //    BrokenParts = brokenParts;
+        //    CompatiblePartCodes = compatiblePartCodes;
+        //}
     }
 }

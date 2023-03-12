@@ -11,7 +11,7 @@ namespace truckCity_api.Models
     public class Plant
     {
         [Key]
-        public int Id { get; private set; }
+        public Guid Id { get; private set; }
 
         [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }

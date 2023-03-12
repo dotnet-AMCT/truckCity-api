@@ -18,17 +18,17 @@ namespace truckCity_api.Models.Dto
                                   [Required] string Model,
                                   [Required] uint Year,
                                   [Required] uint Kilometres,
-                                  Guid? PlantId,
                                   [Required] bool IsSold,
-                                  List<string>? BrokenParts,
-                                  List<string>? CompatiblePartCodes);
-    public record UpdateTruckDto (string? Brand,
-                                  string? Model,
-                                  uint? Year,
-                                  uint? Kilometres,
-                                  Guid? PlantId,
-                                  bool? IsSold,
-                                  List<string>? BrokenParts,
-                                  List<string>? CompatiblePartCodes);
+                                  Guid? PlantId = null,
+                                  List<string>? BrokenParts = null,
+                                  List<string>? CompatiblePartCodes = null);
+    public record UpdateTruckDto (string? Brand = null,
+                                  string? Model = null,
+                                  uint? Year = null,
+                                  uint? Kilometres = null,
+                                  Guid? PlantId = null,
+                                  bool? IsSold = null,
+                                  List<string>? BrokenParts = null,
+                                  List<string>? CompatiblePartCodes = null);
 
 }

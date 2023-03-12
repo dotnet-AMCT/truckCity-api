@@ -10,59 +10,41 @@ namespace truckCity_api.Repositories
     public class TruckRepository : ITruckRepository
     {
         private readonly ApplicationDbContext _context;
-        private IMapper _mapper;
 
-        public TruckRepository(ApplicationDbContext context, IMapper mapper)
+        public TruckRepository(ApplicationDbContext context)
         {
             _context = context;
-            _mapper = mapper;
-
-        }
-        public async Task<TruckDto> CreateUpdate(TruckDto truckDto)
-        {
-            Truck truck = _mapper.Map<TruckDto, Truck>(truckDto);
-            //if (truck.Id > 0)
-            //{
-            //    _context.Trucks.Update(truck);
-            //}
-            //else
-            //{
-            //    await _context.Trucks.AddAsync(truck);
-            //}
-            await _context.Trucks.AddAsync(truck); //
-            await _context.SaveChangesAsync();
-            return _mapper.Map<Truck, TruckDto>(truck);
         }
 
-        public async Task<bool> DeleteTruck(int id)
+        public async Task<IEnumerable<Truck>> GetTrucksAsync()
         {
-            try
-            {
-                Truck? truck = await _context.Trucks.FindAsync(id);
-                if (truck == null)
-                {
-                    return false;
-                }
-                _context.Trucks.Remove(truck);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return await Task.FromResult(_context.Trucks);
         }
 
-        public async Task<TruckDto> GetTruckById(int id)
+        public async Task<Truck> GetTruckAsync(Guid id)
         {
-            Truck? truck = await _context.Trucks.FindAsync(id);
-            return _mapper.Map<TruckDto>(truck);
+            var truck = _context.Trucks.Where(truck => truck.Id == id).SingleOrDefault();
+            return await Task.FromResult(truck);
         }
 
-        public async Task<List<TruckDto>> GetTrucks()
+        public async Task CreateTruckAsync(Truck truck)
         {
-            List<Truck> truckList = await _context.Trucks.ToListAsync();
-            return _mapper.Map<List<TruckDto>>(truckList);
+            await _context.Trucks.AddAsync(truck);
+            _context.SaveChanges();
+            await Task.CompletedTask;
         }
+
+        //public async Task UpdateTruckAsync(Guid id, Truck truck)
+        //{
+        //}
+
+        public async Task DeleteTruckAsync(Guid id)
+        {
+            var truck = _context.Trucks.Where(truck => truck.Id == id).SingleOrDefault();
+            _context.Trucks.Remove(truck);
+            _context.SaveChanges();
+            await Task.CompletedTask;
+        }
+
     }
 }

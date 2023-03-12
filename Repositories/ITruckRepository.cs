@@ -1,12 +1,14 @@
-﻿using truckCity_api.Models.Dto;
+﻿using truckCity_api.Models;
+using truckCity_api.Models.Dto;
 
 namespace truckCity_api.Repositories
 {
     public interface ITruckRepository
     {
-        Task<List<TruckDto>> GetTrucks();
-        Task<TruckDto> GetTruckById(int id);
-        Task<TruckDto> CreateUpdate(TruckDto truckDto);
-        Task<bool> DeleteTruck(int id);
+        Task<IEnumerable<Truck>> GetTrucksAsync();
+        Task<Truck> GetTruckAsync(Guid id);
+        Task CreateTruckAsync(Truck truck);
+    //    Task UpdateTruckAsync(Guid id, Truck truck);
+        Task DeleteTruckAsync(Guid id);
     }
 }
