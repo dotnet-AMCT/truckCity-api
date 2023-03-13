@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Drawing;
 using System.Linq.Expressions;
@@ -118,6 +119,39 @@ namespace truckCity_api.Repository
             }
 
             return operationResult;
+        }
+
+        public async Task<List<ReplacementPartDTO>?> SearchPartsForReplacement(List<string> names, List<string> codes)
+        {
+            List<ReplacementPartDTO>? availablePartsDTO = null;
+            
+            // validate names list
+            bool isValidNameList = true;
+            foreach (var name in names)
+            {
+                isValidNameList = isValidNameList && PartNames.Contains(name);
+            }
+
+            if (isValidNameList)
+            {
+                availablePartsDTO = new List<ReplacementPartDTO>();
+
+                var query = _db.Part.AsQueryable();
+                var availableParts = await query
+                                    .Where(p => p.Truck==null)
+                                    .Where(p => codes.Contains(p.Code))
+                                    .Where(p => names.Contains(p.Name))
+                                    .GroupBy(p => new { p.Code, p.Name })
+                                    .Select(g => g.First())
+                                    .ToListAsync();
+
+                foreach (var part in availableParts)
+                {
+                    availablePartsDTO.Add(_mapper.Map<ReplacementPartDTO>(part));
+                }
+            }
+
+            return availablePartsDTO;
         }
     }
 }
