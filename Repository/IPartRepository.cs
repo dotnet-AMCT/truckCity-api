@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using truckCity_api.Models.DTO;
+using truckCity_api.Models;
 
 
 namespace truckCity_api.Repository
@@ -14,5 +15,6 @@ namespace truckCity_api.Repository
         Task<PartDTO?> CreatePart(CreatePartDTO createPartDTO);
         Task<PartDTO?> UpdatePart(Guid id, UpdatePartDTO updatePartDTO);
         Task<bool> DeletePart(Guid id);
+        Task<List<ReplacementPartDTO>?> SearchPartsForReplacement(List<string> names, List<string> codes);
     }
 }

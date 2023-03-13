@@ -9,6 +9,7 @@ using truckCity_api.Repository;
 using truckCity_api.Models;
 using truckCity_api.Models.DTO;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace truckCity_api.Controllers
 {
@@ -40,6 +41,7 @@ namespace truckCity_api.Controllers
             catch (Exception exception)
             {
                 _responseDTO.IsSuccess = false;
+                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING THE PARTS";
                 _responseDTO.ErrorMessages = new List<string>{ exception.ToString() };
             }
             
@@ -166,6 +168,38 @@ namespace truckCity_api.Controllers
                 return BadRequest(_responseDTO);
             }
             
+            return Ok(_responseDTO);
+        }
+
+        [HttpGet("replacement/")]
+        public async Task<IActionResult> GetReplacementParts([FromQuery]ReplacementPartsRequestDTO requestLists)
+        {
+            try 
+            {
+                var partList = await _partRepository.SearchPartsForReplacement(requestLists.partNames, requestLists.partCodes);
+                if (partList != null)
+                {
+                    _responseDTO.Result = partList;
+                    _responseDTO.DisplayMessage = "LIST OF PARTS";
+                    _responseDTO.IsSuccess = true;
+                }
+                else
+                {
+                    _responseDTO.Result = null;
+                    _responseDTO.DisplayMessage = "INVALID NAME LIST";
+                    _responseDTO.IsSuccess = false;
+                    return BadRequest(_responseDTO);
+                }
+            }
+            catch (Exception exception)
+            {
+                _responseDTO.Result = null;
+                _responseDTO.IsSuccess = false;
+                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING REPLACEMENT PARTS";
+                return BadRequest(_responseDTO);
+            }
+
             return Ok(_responseDTO);
         }
     }
