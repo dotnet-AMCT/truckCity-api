@@ -121,7 +121,7 @@ namespace truckCity_api.Repository
             return operationResult;
         }
 
-        public async Task<List<ReplacementPartDTO>?> SearchPartsForReplacement(List<string> names, List<string> codes)
+        public async Task<List<ReplacementPartDTO>?> SearchPartsForReplacement(Guid truckId, List<string> names)
         {
             List<ReplacementPartDTO>? availablePartsDTO = null;
             
@@ -132,14 +132,17 @@ namespace truckCity_api.Repository
                 isValidNameList = isValidNameList && PartNames.Contains(name);
             }
 
-            if (isValidNameList)
+            var truck = await _db.Trucks.FindAsync(truckId);
+            List<string>? truckCodesList = truck!=null ? truck.CompatiblePartCodes : null;
+
+            if (isValidNameList && truckCodesList!=null)
             {
                 availablePartsDTO = new List<ReplacementPartDTO>();
 
-                var query = _db.Part.AsQueryable();
-                var availableParts = await query
+                var queryParts = _db.Part.AsQueryable();
+                var availableParts = await queryParts
                                     .Where(p => p.Truck==null)
-                                    .Where(p => codes.Contains(p.Code))
+                                    .Where(p => truckCodesList.Contains(p.Code))
                                     .Where(p => names.Contains(p.Name))
                                     .GroupBy(p => new { p.Code, p.Name })
                                     .Select(g => g.First())

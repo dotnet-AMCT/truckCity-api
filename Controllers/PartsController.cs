@@ -172,11 +172,11 @@ namespace truckCity_api.Controllers
         }
 
         [HttpGet("replacement/")]
-        public async Task<IActionResult> GetReplacementParts([FromQuery]ReplacementPartsRequestDTO requestLists)
+        public async Task<IActionResult> GetReplacementParts([FromQuery]ReplacementPartsRequestDTO replacementPartsRequest)
         {
             try 
             {
-                var partList = await _partRepository.SearchPartsForReplacement(requestLists.partNames, requestLists.partCodes);
+                var partList = await _partRepository.SearchPartsForReplacement(replacementPartsRequest.truckId, replacementPartsRequest.partCodes);
                 if (partList != null)
                 {
                     _responseDTO.Result = partList;
@@ -186,7 +186,7 @@ namespace truckCity_api.Controllers
                 else
                 {
                     _responseDTO.Result = null;
-                    _responseDTO.DisplayMessage = "INVALID NAME LIST";
+                    _responseDTO.DisplayMessage = "INVALID TRUCKID OR NAME LIST";
                     _responseDTO.IsSuccess = false;
                     return BadRequest(_responseDTO);
                 }
