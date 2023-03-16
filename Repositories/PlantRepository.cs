@@ -30,6 +30,13 @@ namespace truckCity_api.Repositories
             await Task.CompletedTask;
         }
 
+        public async Task UpdatePlantAsync(Plant plant)
+        {
+            _context.Plants.Update(plant);
+            _context.SaveChanges();
+            await Task.CompletedTask;
+        }
+
         public async Task DeletePlantAsync(Guid id)
         {
             var plant = _context.Plants.Where(plant => plant.Id == id).SingleOrDefault();

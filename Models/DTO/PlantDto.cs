@@ -11,8 +11,8 @@ namespace truckCity_api.Models.Dto
                                  [Required] uint MaxCapacity,
                                  [Required] uint CurrentCapacity,
                                  [Required] string Address);
-    public record UpdatePlantDto(string? Name = null,
-                                 uint? MaxCapacity = null,
-                                 uint? CurrentCapacity = null,
-                                 string? Address = null);
+    public record UpdatePlantDto(string? Name,
+                                 uint? MaxCapacity,
+                                 uint? CurrentCapacity,
+                                 string? Address);
 }

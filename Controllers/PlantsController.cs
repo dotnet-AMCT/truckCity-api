@@ -3,6 +3,9 @@ using truckCity_api.Utilities;
 using truckCity_api.Models.Dto;
 using truckCity_api.Repositories;
 using truckCity_api.Models;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
+using System.Configuration;
 
 namespace truckCity_api.Controllers
 {
@@ -44,34 +47,35 @@ namespace truckCity_api.Controllers
 
         // PUT: api/Plants/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutPlant(Guid id, Plant plant)
-        //{
-        //    if (id != plant.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+        
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdatePlantAsync(Guid id, UpdatePlantDto plantDto)
+        {
+            var existingPlant = await _iPlantRepository.GetPlantAsync(id);
 
-        //    _context.Entry(plant).State = EntityState.Modified;
+            if (existingPlant is null)
+            {
+                return NotFound();
+            }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!PlantExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            PropertyInfo[] plantDtoProperties = typeof(UpdatePlantDto).GetProperties();
+            PropertyInfo[] plantProperties = typeof(Plant).GetProperties();
+            foreach (PropertyInfo propPlantDto in plantDtoProperties)
+            {
+                if (propPlantDto.GetValue(plantDto, null) != null)
+                {
+                    foreach (PropertyInfo propPlant in plantProperties)
+                    {
+                        if (propPlant.Name == propPlantDto.Name)
+                            propPlant.SetValue(existingPlant, propPlantDto.GetValue(plantDto, null), null);
+                    }
+                }
+            }
 
-        //    return NoContent();
-        //}
+            await _iPlantRepository.UpdatePlantAsync(existingPlant);
+
+            return NoContent();
+        }
 
         // POST: api/Plants
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
