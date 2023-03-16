@@ -7,9 +7,9 @@ using System.Reflection;
 using System.Text;
 using truckCity_api.Data;
 using truckCity_api.Models;
-using truckCity_api.Models.DTO;
+using truckCity_api.Models.Dto;
 
-namespace truckCity_api.Repository
+namespace truckCity_api.Repositories
 {
     public class PartRepository : IPartRepository
     {
@@ -37,62 +37,62 @@ namespace truckCity_api.Repository
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<PartDTO>> GetPart()
+        public async Task<IEnumerable<PartDto>> GetPart()
         {
             List<Part> partsList = await _db.Part.ToListAsync();
 
-            return _mapper.Map<List<PartDTO>>(partsList);
+            return _mapper.Map<List<PartDto>>(partsList);
         }
 
-        public async Task<PartDTO> GetPart(Guid id)
+        public async Task<PartDto> GetPart(Guid id)
         {
             var part = await _db.Part.FindAsync(id);
 
-            return _mapper.Map<PartDTO>(part);
+            return _mapper.Map<PartDto>(part);
         }
 
-        public async Task<PartDTO?> CreatePart(CreatePartDTO createPartDTO)
+        public async Task<PartDto?> CreatePart(CreatePartDto createPartDto)
         {
             Part? part = null;
-            if (PartNames.Contains(createPartDTO.Name))
+            if (PartNames.Contains(createPartDto.Name))
             {
-                part = _mapper.Map<Part>(createPartDTO);
+                part = _mapper.Map<Part>(createPartDto);
                 await _db.Part.AddAsync(part);
                 await _db.SaveChangesAsync();
             }
 
-            PartDTO? partDTO = part!=null ? _mapper.Map<PartDTO>(part) : null;
+            PartDto? partDto = part!=null ? _mapper.Map<PartDto>(part) : null;
 
-            return partDTO;
+            return partDto;
         }
 
-        public async Task<PartDTO?> UpdatePart(Guid id, UpdatePartDTO updatePartDTO)
+        public async Task<PartDto?> UpdatePart(Guid id, UpdatePartDto updatePartDto)
         {
-            PartDTO? partDTO = null;
+            PartDto? partDto = null;
             Part? part = await _db.Part.FindAsync(id);
-            bool is_valid_new_name = updatePartDTO.Name != null ? PartNames.Contains(updatePartDTO.Name) : false;
+            bool is_valid_new_name = updatePartDto.Name != null ? PartNames.Contains(updatePartDto.Name) : false;
 
             if (part != null && is_valid_new_name)
             {
-                if (updatePartDTO.Name != null)
+                if (updatePartDto.Name != null)
                 {
-                    part.Name = updatePartDTO.Name;
+                    part.Name = updatePartDto.Name;
                 }
-                if (updatePartDTO.Code != null)
+                if (updatePartDto.Code != null)
                 {
-                    part.Code = updatePartDTO.Code;
+                    part.Code = updatePartDto.Code;
                 }
-                if (updatePartDTO.TruckId != null)
+                if (updatePartDto.TruckId != null)
                 {
-                    part.TruckId = updatePartDTO.TruckId;
+                    part.TruckId = updatePartDto.TruckId;
                 }
 
                 await _db.SaveChangesAsync();
 
-                partDTO = _mapper.Map<PartDTO>(part);
+                partDto = _mapper.Map<PartDto>(part);
             }
 
-            return partDTO;
+            return partDto;
         }
 
         public async Task<bool> DeletePart(Guid id)

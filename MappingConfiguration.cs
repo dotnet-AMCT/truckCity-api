@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using truckCity_api.Models;
-using truckCity_api.Models.DTO;
+using truckCity_api.Models.Dto;
 
 
 namespace truckCity_api
@@ -15,12 +15,12 @@ namespace truckCity_api
         {
             var mappingConfiguration = new MapperConfiguration( config =>
             {
-                config.CreateMap<PartDTO, Part>();
-                config.CreateMap<Part, PartDTO >();
-                config.CreateMap<CreatePartDTO, Part>();
-                config.CreateMap<Part, CreatePartDTO>();
-                config.CreateMap<UpdatePartDTO, Part>();
-                config.CreateMap<Part, UpdatePartDTO>();
+                config.CreateMap<PartDto, Part>();
+                config.CreateMap<Part, PartDto >();
+                config.CreateMap<CreatePartDto, Part>();
+                config.CreateMap<Part, CreatePartDto>();
+                config.CreateMap<UpdatePartDto, Part>();
+                config.CreateMap<Part, UpdatePartDto>();
             }
             );
 

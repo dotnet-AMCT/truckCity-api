@@ -11,26 +11,20 @@ namespace truckCity_api.Models
     public class Plant
     {
         [Key]
-        public int Id { get; private set; }
+        public Guid Id { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [Required]
-        public int MaxCapacity { get; set; }
+        public uint MaxCapacity { get; set; }
 
         [Required]
-        public int CurrentCapacity { get; set; }
+        public uint CurrentCapacity { get; set; }
 
         [Required(AllowEmptyStrings = false)]
-        public string Address { get; set; } //       (arg format)
+        public string Address { get; set; } = null!; //       (arg format)
 
         public List<Truck>? Trucks { get; set; }
-
-        public Plant(string name, string address)
-        {
-            Name = name;
-            Address = address;
-        }
     }
 }
