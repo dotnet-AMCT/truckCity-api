@@ -10,8 +10,7 @@ namespace truckCity_api.Models.DTO
                                 [Required] string Code,
                                 Guid? TruckId);
     public record UpdatePartDTO(string? Name,
-                                string? Code,
-                                Guid? TruckId);
+                                string? Code);
     public record ReplacementPartDTO(Guid Id,
                                      string Name,
                                      string Code);

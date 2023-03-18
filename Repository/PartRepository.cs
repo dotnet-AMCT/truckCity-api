@@ -83,10 +83,6 @@ namespace truckCity_api.Repository
                 {
                     part.Code = updatePartDTO.Code;
                 }
-                if (updatePartDTO.TruckId != null)
-                {
-                    part.TruckId = updatePartDTO.TruckId;
-                }
 
                 await _db.SaveChangesAsync();
 
