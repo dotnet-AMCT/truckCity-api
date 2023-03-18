@@ -202,5 +202,36 @@ namespace truckCity_api.Controllers
 
             return Ok(_responseDTO);
         }
+
+        [HttpPut("assign/{id}")]
+        public async Task<IActionResult> ModifyAssignationToTruckStatus(Guid id, Guid? truckId)
+        {
+            try
+            {
+                PartDTO? partResult = await _partRepository.AssignOrUnassignTotruck(id, truckId);
+                _responseDTO.Result = partResult;
+            }
+            catch (Exception exception)
+            {
+                _responseDTO.Result = null;
+                _responseDTO.IsSuccess = false;
+                _responseDTO.DisplayMessage = "AN ERROR OCCURRED ASSIGNING THE PART TO TRUCK";
+                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+            }
+
+            if (_responseDTO.Result != null)
+            {
+                _responseDTO.IsSuccess = true;
+                _responseDTO.DisplayMessage = "PART ASSIGNED";
+            }
+            else
+            {
+                _responseDTO.IsSuccess = false;
+                _responseDTO.DisplayMessage = "INVALID PARTID OR TRUCKID";
+                return BadRequest(_responseDTO);
+            }
+
+            return Ok(_responseDTO);
+        }
     }
 }

@@ -50,9 +50,19 @@ namespace truckCity_api.Data
                     )
                 );
             });
-            builder.Entity<Plant>().HasIndex(u => u.Name).IsUnique();
-            builder.Entity<Plant>().HasIndex(u => u.Address).IsUnique();
-            builder.Entity<Part>().Property(c => c.Name).HasConversion<string>();
+            builder.Entity<Plant>()
+                .HasIndex(u => u.Name)
+                .IsUnique();
+            builder.Entity<Plant>()
+                .HasIndex(u => u.Address)
+                .IsUnique();
+            builder.Entity<Part>()
+                .Property(c => c.Name)
+                .HasConversion<string>();
+            builder.Entity<Part>()
+                .HasOne(p => p.Truck)
+                .WithMany(t => t.PartsForRepairment)
+                .HasForeignKey(p => p.TruckId);
             base.OnModelCreating(builder);
         }
     }

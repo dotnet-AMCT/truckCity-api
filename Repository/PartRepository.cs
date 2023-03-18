@@ -83,10 +83,6 @@ namespace truckCity_api.Repository
                 {
                     part.Code = updatePartDTO.Code;
                 }
-                if (updatePartDTO.TruckId != null)
-                {
-                    part.TruckId = updatePartDTO.TruckId;
-                }
 
                 await _db.SaveChangesAsync();
 
@@ -155,6 +151,34 @@ namespace truckCity_api.Repository
             }
 
             return availablePartsDTO;
+        }
+
+        public async Task<PartDTO?> AssignOrUnassignTotruck(Guid id, Guid? truckId)
+        {
+            PartDTO? partDTO = null;
+            var part = await _db.Part.FindAsync(id);
+            
+            if (part != null)
+            {
+                if (truckId != null)
+                {
+                    var truck = await _db.Trucks.FindAsync(truckId);
+                    if (truck != null)
+                    {
+                        part.Truck = truck;
+                        await _db.SaveChangesAsync();
+                        partDTO = _mapper.Map<PartDTO>(part);
+                    }
+                }
+                else
+                {
+                    part.TruckId = null;
+                    await _db.SaveChangesAsync();
+                    partDTO = _mapper.Map<PartDTO>(part);
+                }
+            }
+            
+            return partDTO;
         }
     }
 }

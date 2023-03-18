@@ -32,7 +32,7 @@ namespace truckCity_api.Models
         public Guid? TruckId { get; set; }
 
         [Comment("The truck to repair where it's assigned")]
-        public Truck? Truck { get; set; }
+        public Truck? Truck { get; set; } = null;
 
         public Part(string name, string code)
         {
