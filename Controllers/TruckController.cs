@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -55,20 +56,16 @@ namespace truckCity_api.Controllers
         // POST: api/Truck
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TruckDto>> CreateItemAsync(CreateTruckDto truckDto)
+        public async Task<ActionResult<TruckDto>> CreateTruckAsync(CreateTruckDto truckDto)
         {
             Truck truck = new()
             {
-                Id = Guid.NewGuid(),
                 LicencePlate = truckDto.LicencePlate,
                 Brand = truckDto.Brand,
                 Model = truckDto.Model,
                 Year = truckDto.Year,
                 Kilometres = truckDto.Kilometres,
-                IsSold = truckDto.IsSold,
-                BrokenParts = truckDto.BrokenParts,
-                CompatiblePartCodes = truckDto.CompatiblePartCodes,
-                Plant = null //import repository plant
+                IsSold = truckDto.IsSold
             };
 
             await _iTruckRepository.CreateTruckAsync(truck);
@@ -78,26 +75,38 @@ namespace truckCity_api.Controllers
 
         // PUT: api/Truck/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<ActionResult> UpdateTruckAsync(Guid id, UpdateTruckDto truckDto)
-        //{
-        //    var existingTruck = await _iTruckRepository.GetTruckAsync(id);
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateTruckAsync(Guid id, UpdateTruckDto truckDto)
+        {
+            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
 
-        //    if (existingTruck is null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (existingTruck is null)
+            {
+                return NotFound();
+            }
 
-        //    existingTruck.Name = truckDto.Name;
-        //    existingTruck.Price = truckDto.Price;
+            PropertyInfo[] truckDtoProperties = typeof(UpdateTruckDto).GetProperties();
+            PropertyInfo[] truckProperties = typeof(Truck).GetProperties();
 
-        //    await _iTruckRepository.UpdateTruckAsync(existingTruck);
+            foreach (PropertyInfo propTruckDto in truckDtoProperties)
+            {
+                if (propTruckDto.GetValue(truckDto, null) != null)
+                {
+                    foreach (PropertyInfo propTruck in truckProperties)
+                    {
+                        if (propTruck.Name == propTruckDto.Name)
+                            propTruck.SetValue(existingTruck, propTruckDto.GetValue(truckDto, null), null);
+                    }
+                }
+            }
 
-        //    return NoContent();
-        //}
+            await _iTruckRepository.UpdateTruckAsync(existingTruck);
 
-        //// DELETE: api/Truck/5
-        [HttpDelete("{id}")]
+            return NoContent();
+        }
+
+            // DELETE: api/Truck/5
+            [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteTruckAsync(Guid id)
         {
             var existingTruck = await _iTruckRepository.GetTruckAsync(id);

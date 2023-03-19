@@ -8,19 +8,9 @@ public static class TruckExtension
 {
     public static TruckDto AsDto(this Truck truck)
     {
-        if (truck.Plant == null)
-        {
-            return new TruckDto(truck.Id, truck.LicencePlate, truck.Brand,
-                            truck.Model, truck.Year, truck.Kilometres,
-                            null, truck.IsSold, truck.BrokenParts,
-                            truck.CompatiblePartCodes);
-        }
-        else
-        {
-            return new TruckDto(truck.Id, truck.LicencePlate, truck.Brand,
-                truck.Model, truck.Year, truck.Kilometres,
-                truck.Plant.Id, truck.IsSold, truck.BrokenParts,
-                truck.CompatiblePartCodes);
-        }
+        return new TruckDto(truck.Id, truck.LicencePlate, truck.Brand,
+                    truck.Model, truck.Year, truck.Kilometres,
+                    truck.PlantId, truck.IsSold, truck.BrokenParts,
+                    truck.CompatiblePartCodes);
     }
 }

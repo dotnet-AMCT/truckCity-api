@@ -34,9 +34,12 @@ namespace truckCity_api.Repositories
             await Task.CompletedTask;
         }
 
-        //public async Task UpdateTruckAsync(Guid id, Truck truck)
-        //{
-        //}
+        public async Task UpdateTruckAsync(Truck truck)
+        {
+            _context.Trucks.Update(truck);
+            _context.SaveChanges();
+            await Task.CompletedTask;
+        }
 
         public async Task DeleteTruckAsync(Guid id)
         {
@@ -45,6 +48,5 @@ namespace truckCity_api.Repositories
             _context.SaveChanges();
             await Task.CompletedTask;
         }
-
     }
 }

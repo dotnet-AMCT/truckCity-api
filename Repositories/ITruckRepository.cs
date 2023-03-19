@@ -8,7 +8,7 @@ namespace truckCity_api.Repositories
         Task<IEnumerable<Truck>> GetTrucksAsync();
         Task<Truck> GetTruckAsync(Guid id);
         Task CreateTruckAsync(Truck truck);
-    //    Task UpdateTruckAsync(Guid id, Truck truck);
+        Task UpdateTruckAsync(Truck truck);
         Task DeleteTruckAsync(Guid id);
     }
 }
