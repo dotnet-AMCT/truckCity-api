@@ -188,7 +188,7 @@ namespace truckCity_api.Controllers
                     _responseDTO.Result = null;
                     _responseDTO.DisplayMessage = "INVALID TRUCKID OR NAME LIST";
                     _responseDTO.IsSuccess = false;
-                    return BadRequest(_responseDTO);
+                    return NotFound(_responseDTO);
                 }
             }
             catch (Exception exception)
@@ -197,7 +197,7 @@ namespace truckCity_api.Controllers
                 _responseDTO.IsSuccess = false;
                 _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
                 _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING REPLACEMENT PARTS";
-                return BadRequest(_responseDTO);
+                return NotFound(_responseDTO);
             }
 
             return Ok(_responseDTO);
@@ -215,7 +215,7 @@ namespace truckCity_api.Controllers
             {
                 _responseDTO.Result = null;
                 _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "AN ERROR OCCURRED ASSIGNING THE PART TO TRUCK";
+                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE ASSIGNING THE PART TO TRUCK";
                 _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
             }
 
@@ -229,6 +229,36 @@ namespace truckCity_api.Controllers
                 _responseDTO.IsSuccess = false;
                 _responseDTO.DisplayMessage = "INVALID PARTID OR TRUCKID";
                 return BadRequest(_responseDTO);
+            }
+
+            return Ok(_responseDTO);
+        }
+
+        [HttpGet("partStock/{code}")]
+        public async Task<IActionResult> CheckPartStockByCode(string code)
+        {
+            try
+            {
+                var partStock = await _partRepository.SearchPartsByCode(code);
+                if (partStock != null)
+                {
+                    _responseDTO.DisplayMessage = "PART STOCK";
+                }
+                else
+                {
+                    _responseDTO.DisplayMessage = "NO STOCK FOR THE GIVEN CODE";
+                }
+                _responseDTO.Result = partStock;
+                _responseDTO.IsSuccess = true;
+            }
+            catch (Exception exception)
+            {
+                _responseDTO.Result = null;
+                _responseDTO.IsSuccess = false;
+                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING FOR THE PART STOCK";
+                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+
+                return NotFound(_responseDTO);
             }
 
             return Ok(_responseDTO);
