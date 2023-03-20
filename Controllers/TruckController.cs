@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -105,8 +106,150 @@ namespace truckCity_api.Controllers
             return NoContent();
         }
 
-            // DELETE: api/Truck/5
-            [HttpDelete("{id}")]
+        // PUT: api/Truck/SetCompatiblePartCodes/5
+        [HttpPut("SetCompatiblePartCodes/{id}")]
+        public async Task<ActionResult> SetCompatiblePartCodesAsync(Guid id, List<string> CompatiblePartCodes)
+        {
+            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
+
+            if (existingTruck is null)
+            {
+                return NotFound();
+            }
+
+            if (existingTruck.CompatiblePartCodes is null)
+            {
+                existingTruck.CompatiblePartCodes = CompatiblePartCodes;
+            }
+            else
+            {
+                foreach (string partCode in CompatiblePartCodes)
+                {
+                    if (!existingTruck.CompatiblePartCodes.Contains(partCode))
+                    {
+                        existingTruck.CompatiblePartCodes.Add(partCode);
+                    }
+                }
+            }
+
+            await _iTruckRepository.UpdateTruckAsync(existingTruck);
+
+            return NoContent();
+        }
+
+        // DELETE: api/Truck/DeleteCompatiblePartCodes/5
+        [HttpDelete("DeleteCompatiblePartCodes/{id}")]
+        public async Task<ActionResult> DeleteCompatiblePartCodesAsync(Guid id, List<string> CompatiblePartCodes)
+        {
+            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
+
+            if (existingTruck is null)
+            {
+                return NotFound();
+            }
+
+            if (existingTruck.CompatiblePartCodes is null)
+            {
+                return NoContent();
+            }
+            else
+            {
+                foreach (string partCode in CompatiblePartCodes)
+                {
+                    if (existingTruck.CompatiblePartCodes.Contains(partCode))
+                    {
+                        existingTruck.CompatiblePartCodes.Remove(partCode);
+                    }
+                }
+            }
+
+            await _iTruckRepository.UpdateTruckAsync(existingTruck);
+
+            return NoContent();
+        }
+
+        // PUT: api/Truck/SetBrokenParts/5
+        [HttpPut("SetBrokenParts/{id}")]
+        public async Task<ActionResult> SetBrokenPartsAsync(Guid id, List<string> BrokenParts)
+        {
+            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
+
+            if (existingTruck is null)
+            {
+                return NotFound();
+            }
+
+            if (existingTruck.BrokenParts is null)
+            {
+                existingTruck.BrokenParts = BrokenParts;
+            }
+            else
+            {
+                foreach (string brokenPart in BrokenParts)
+                {
+                    if (!existingTruck.BrokenParts.Contains(brokenPart))
+                    {
+                        existingTruck.BrokenParts.Add(brokenPart);
+                    }
+                }
+            }
+
+            await _iTruckRepository.UpdateTruckAsync(existingTruck);
+
+            return NoContent();
+        }
+
+        // DELETE: api/Truck/DeleteBrokenParts/5
+        [HttpDelete("DeleteBrokenParts/{id}")]
+        public async Task<ActionResult> DeleteBrokenPartsAsync(Guid id, List<string> BrokenParts)
+        {
+            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
+
+            if (existingTruck is null)
+            {
+                return NotFound();
+            }
+
+            if (existingTruck.BrokenParts is null)
+            {
+                return NoContent();
+            }
+            else
+            {
+                foreach (string brokenPart in BrokenParts)
+                {
+                    if (existingTruck.BrokenParts.Contains(brokenPart))
+                    {
+                        existingTruck.BrokenParts.Remove(brokenPart);
+                    }
+                }
+            }
+
+            await _iTruckRepository.UpdateTruckAsync(existingTruck);
+
+            return NoContent();
+        }
+
+        // PUT: api/Truck/SetPlant/5
+        [HttpPut("SetPlant/{id}")]
+        public async Task<ActionResult> SetPlantIdAsync(Guid id, Guid? PlantId)
+        {
+            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
+
+            if (existingTruck is null)
+            {
+                return NotFound();
+            }
+
+            existingTruck.PlantId = PlantId; // import plant repository
+
+            await _iTruckRepository.UpdateTruckAsync(existingTruck);
+
+            return NoContent();
+        }
+
+        // DELETE: api/Truck/5
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteTruckAsync(Guid id)
         {
             var existingTruck = await _iTruckRepository.GetTruckAsync(id);

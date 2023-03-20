@@ -8,8 +8,8 @@ namespace truckCity_api.Models.Dto
                             string Model,
                             uint Year,
                             uint Kilometres,
-                            Guid? PlantId,
                             bool IsSold,
+                            Guid? PlantId,
                             List<string>? BrokenParts,
                             List<string>? CompatiblePartCodes);
 
@@ -20,13 +20,9 @@ namespace truckCity_api.Models.Dto
                                   [Required] uint Kilometres,
                                   [Required] bool IsSold);
 
-    public record SetPlantIdTruckDto (Guid? PlantId);
-    public record SetBrokenPartsTruckDto (List<string>? BrokenParts);
-    public record SetCompatiblePartCodesTruckDto (List<string>? CompatiblePartCodes);
     public record UpdateTruckDto (string? Brand = null,
                                   string? Model = null,
                                   uint? Year = null,
                                   uint? Kilometres = null,
                                   bool? IsSold = null);
-
 }

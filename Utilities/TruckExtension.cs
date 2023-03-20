@@ -10,7 +10,7 @@ public static class TruckExtension
     {
         return new TruckDto(truck.Id, truck.LicencePlate, truck.Brand,
                     truck.Model, truck.Year, truck.Kilometres,
-                    truck.PlantId, truck.IsSold, truck.BrokenParts,
+                    truck.IsSold, truck.PlantId, truck.BrokenParts,
                     truck.CompatiblePartCodes);
     }
 }
