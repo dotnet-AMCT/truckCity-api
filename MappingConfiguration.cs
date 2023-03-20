@@ -13,10 +13,15 @@ namespace truckCity_api
     {
         public static MapperConfiguration RegisterMaps()
         {
-            var mappingConfiguration = new MapperConfiguration(config =>
+            var mappingConfiguration = new MapperConfiguration( config =>
             {
-                config.CreateMap<TruckDto, Truck>();
-                config.CreateMap<Truck, TruckDto>();
+                config.CreateMap<PartDto, Part>();
+                config.CreateMap<Part, PartDto>();
+                config.CreateMap<CreatePartDto, Part>();
+                config.CreateMap<Part, CreatePartDto>();
+                config.CreateMap<UpdatePartDto, Part>();
+                config.CreateMap<Part, UpdatePartDto>();
+                config.CreateMap<Part, ReplacementPartDto>();
             }
             );
 

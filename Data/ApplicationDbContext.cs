@@ -12,13 +12,15 @@ namespace truckCity_api.Data
 {
     public class ApplicationDbContext : DbContext
     {
+        public DbSet<Truck> Trucks { get; set; }
+        public DbSet<Part> Part { get; set; }
+        public DbSet<Plant> Plants { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
             builder.Entity<Truck>().HasIndex(u => u.LicencePlate).IsUnique();
             builder.Entity<Plant>().HasIndex(u => u.Name).IsUnique();
             builder.Entity<Plant>().HasIndex(u => u.Address).IsUnique();
@@ -53,11 +55,14 @@ namespace truckCity_api.Data
                 );
             });
 
+            builder.Entity<Part>()
+                .Property(c => c.Name)
+                .HasConversion<string>();
+            builder.Entity<Part>()
+                .HasOne(p => p.Truck)
+                .WithMany(t => t.PartsForRepairment)
+                .HasForeignKey(p => p.TruckId);
+            base.OnModelCreating(builder);
         }
-
-        public DbSet<Truck> Trucks { get; set; }
-        public DbSet<Part> Parts { get; set; }
-        public DbSet<Plant> Plants { get; set; }
-
     }
 }

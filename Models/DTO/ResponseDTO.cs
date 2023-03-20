@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace truckCity_api.Models.Dto
+namespace truckCity_api.Models.DTO
 {
-    public class ResponseDto
+    public class ResponseDTO
     {
         public bool IsSuccess { get; set; } = true;
 
