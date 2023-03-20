@@ -35,6 +35,8 @@ namespace truckCity_api.Models
         [Required]
         public List<string>? CompatiblePartCodes { get; set; } = new List<string>();
 
+        public List<Part>? PartsForRepairment { get; set; }
+
         public Truck(string brand, string licencePlate, string model)
         {
             Brand = brand;
