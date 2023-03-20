@@ -34,5 +34,7 @@ namespace truckCity_api.Models
 
         [Required]
         public List<string>? CompatiblePartCodes { get; set; } = null;
+
+        public List<Part>? PartsForRepairment { get; set; }
     }
 }

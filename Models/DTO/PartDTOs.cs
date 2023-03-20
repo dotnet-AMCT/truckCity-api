@@ -14,4 +14,6 @@ namespace truckCity_api.Models.DTO
     public record ReplacementPartDTO(Guid Id,
                                      string Name,
                                      string Code);
+    public record PartStock(string Name,
+                            int StockQuantity);
 }

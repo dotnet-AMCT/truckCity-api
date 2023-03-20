@@ -180,5 +180,27 @@ namespace truckCity_api.Repositories
             
             return partDTO;
         }
+
+        public async Task<PartStock?> SearchPartsByCode(string code)
+        {
+            PartStock? partStock = null;
+
+            var query = await (from p in _db.Set<Part>()
+                                where p.Code == code
+                                group p by p.Name
+                                into g
+                                select new { Name = g.Key, StockAvailability = g.Count() })
+                            .ToListAsync();
+
+            if (query != null && query.Count() > 0)
+            {
+                partStock = new PartStock(
+                                    query[0].Name, 
+                                    query[0].StockAvailability
+                                );
+            }
+
+            return partStock;
+        }
     }
 }

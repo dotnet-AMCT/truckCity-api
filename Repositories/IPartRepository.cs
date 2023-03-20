@@ -17,5 +17,6 @@ namespace truckCity_api.Repositories
         Task<bool> DeletePart(Guid id);
         Task<List<ReplacementPartDTO>?> SearchPartsForReplacement(Guid truckId, List<string> names);
         Task<PartDTO?> AssignOrUnassignTotruck(Guid id, Guid? truckId);
+        Task<PartStock?> SearchPartsByCode(string code);
     }
 }
