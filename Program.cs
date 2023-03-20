@@ -2,7 +2,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using truckCity_api;
 using truckCity_api.Data;
-using truckCity_api.Repository;
+using truckCity_api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 // Repositories Services
 builder.Services.AddScoped<IPartRepository, PartRepository>();
+builder.Services.AddScoped<IPlantRepository, PlantRepository>();
 
 // Controllers Service
 builder.Services.AddControllers();

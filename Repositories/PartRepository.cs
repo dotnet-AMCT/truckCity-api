@@ -10,7 +10,7 @@ using truckCity_api.Data;
 using truckCity_api.Models;
 using truckCity_api.Models.DTO;
 
-namespace truckCity_api.Repository
+namespace truckCity_api.Repositories
 {
     public class PartRepository : IPartRepository
     {

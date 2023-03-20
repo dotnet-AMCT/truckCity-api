@@ -12,34 +12,27 @@ namespace truckCity_api.Models
         public Guid Id { get; private set; }
 
         [Required]
-        public string LicencePlate { get; set; } //(correct format);
+        public string LicencePlate { get; set; } = null!; //(correct format);
 
         [Required]
-        public string Brand { get; set; }
+        public string Brand { get; set; } = null!;
 
         [Required]
-        public string Model { get; set; }
+        public string Model { get; set; } = null!;
 
         [Required]
         public int Year { get; set; }
 
-        public int? PlantId { get; set; }
+        public Guid? PlantId { get; set; }
 
-        public string? CurrentPlant { get; set; } //foreign key to Plant
+        public Plant? Plant { get; set; } //foreign key to Plant
 
         [Required]
         public bool IsSold { get; set; }
 
-        public List<string>? BrokenParts { get; set; } = new List<string>();
+        public List<string>? BrokenParts { get; set; } = null;
 
         [Required]
-        public List<string>? CompatiblePartCodes { get; set; } = new List<string>();
-
-        public Truck(string brand, string licencePlate, string model)
-        {
-            Brand = brand;
-            LicencePlate = licencePlate;
-            Model = model;
-        }
+        public List<string>? CompatiblePartCodes { get; set; } = null;
     }
 }

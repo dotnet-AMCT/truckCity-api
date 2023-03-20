@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using truckCity_api.Repository;
+using truckCity_api.Repositories;
 using truckCity_api.Models;
 using truckCity_api.Models.DTO;
 using System.Linq.Expressions;

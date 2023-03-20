@@ -6,7 +6,7 @@ using truckCity_api.Models.DTO;
 using truckCity_api.Models;
 
 
-namespace truckCity_api.Repository
+namespace truckCity_api.Repositories
 {
     public interface IPartRepository
     {
