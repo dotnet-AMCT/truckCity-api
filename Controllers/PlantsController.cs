@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using truckCity_api.Utilities;
-using truckCity_api.Models.DTO;
+using truckCity_api.Models.Dto;
 using truckCity_api.Repositories;
 using truckCity_api.Models;
 using Newtonsoft.Json.Linq;
@@ -84,10 +84,8 @@ namespace truckCity_api.Controllers
         {
             Plant plant = new()
             {
-                Id = Guid.NewGuid(),
                 Name = plantDto.Name,
                 MaxCapacity = plantDto.MaxCapacity,
-                CurrentCapacity = plantDto.CurrentCapacity,
                 Address = plantDto.Address
             };
 

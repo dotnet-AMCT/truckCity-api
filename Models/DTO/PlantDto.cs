@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace truckCity_api.Models.DTO
+namespace truckCity_api.Models.Dto
 {
     public record PlantDto(Guid Id,
                            string Name,
@@ -9,10 +9,8 @@ namespace truckCity_api.Models.DTO
                            string Address);
     public record CreatePlantDto([Required] string Name,
                                  [Required] uint MaxCapacity,
-                                 [Required] uint CurrentCapacity,
                                  [Required] string Address);
     public record UpdatePlantDto(string? Name,
                                  uint? MaxCapacity,
-                                 uint? CurrentCapacity,
                                  string? Address);
 }

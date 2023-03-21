@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace truckCity_api.Models.DTO
+namespace truckCity_api.Models.Dto
 {
-    public record PartDTO(Guid Id,
+    public record PartDto(Guid Id,
                           string Name,
                           string Code,
                           Guid? TruckId);
-    public record CreatePartDTO([Required] string Name,
+    public record CreatePartDto([Required] string Name,
                                 [Required] string Code,
                                 Guid? TruckId);
-    public record UpdatePartDTO(string? Name,
+    public record UpdatePartDto(string? Name,
                                 string? Code);
-    public record ReplacementPartDTO(Guid Id,
+    public record ReplacementPartDto(Guid Id,
                                      string Name,
                                      string Code);
     public record PartStock(string Name,

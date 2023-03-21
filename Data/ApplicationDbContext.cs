@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using truckCity_api.Models;
 
 namespace truckCity_api.Data
-{	
-	public class ApplicationDbContext : DbContext
+{
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Truck> Trucks { get; set; }
         public DbSet<Part> Part { get; set; }
@@ -22,6 +22,9 @@ namespace truckCity_api.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Truck>().HasIndex(u => u.LicencePlate).IsUnique();
+            builder.Entity<Plant>().HasIndex(u => u.Name).IsUnique();
+            builder.Entity<Plant>().HasIndex(u => u.Address).IsUnique();
+
             builder.Entity<Truck>(x =>
             {
                 x.HasKey(y => y.Id);
@@ -36,6 +39,7 @@ namespace truckCity_api.Data
                     )
                 );
             });
+
             builder.Entity<Truck>(x =>
             {
                 x.HasKey(y => y.Id);
@@ -50,12 +54,7 @@ namespace truckCity_api.Data
                     )
                 );
             });
-            builder.Entity<Plant>()
-                .HasIndex(u => u.Name)
-                .IsUnique();
-            builder.Entity<Plant>()
-                .HasIndex(u => u.Address)
-                .IsUnique();
+
             builder.Entity<Part>()
                 .Property(c => c.Name)
                 .HasConversion<string>();

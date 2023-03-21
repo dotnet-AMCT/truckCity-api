@@ -1,5 +1,5 @@
 ﻿using truckCity_api.Models;
-using truckCity_api.Models.DTO;
+using truckCity_api.Models.Dto;
 
 namespace truckCity_api.Utilities;
 

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using truckCity_api.Repositories;
 using truckCity_api.Models;
-using truckCity_api.Models.DTO;
+using truckCity_api.Models.Dto;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
@@ -18,127 +18,127 @@ namespace truckCity_api.Controllers
     public class PartsController : ControllerBase
     {
         private readonly IPartRepository _partRepository;
-        protected ResponseDTO _responseDTO;
+        protected ResponseDto _responseDto;
 
         public PartsController(
             IPartRepository partRepository)
         {
             _partRepository = partRepository;
-            _responseDTO = new ResponseDTO();
+            _responseDto = new ResponseDto();
         }
 
         // GET: api/Parts
         [HttpGet]
-        public async Task<ActionResult<ResponseDTO>> GetPart()
+        public async Task<ActionResult<ResponseDto>> GetPart()
         {
             try
             {
                 var partList = await _partRepository.GetPart();
-                _responseDTO.Result = partList;
-                _responseDTO.DisplayMessage = "LIST OF PARTS";
-                _responseDTO.IsSuccess = true;
+                _responseDto.Result = partList;
+                _responseDto.DisplayMessage = "LIST OF PARTS";
+                _responseDto.IsSuccess = true;
             }
             catch (Exception exception)
             {
-                _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING THE PARTS";
-                _responseDTO.ErrorMessages = new List<string>{ exception.ToString() };
+                _responseDto.IsSuccess = false;
+                _responseDto.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING THE PARTS";
+                _responseDto.ErrorMessages = new List<string>{ exception.ToString() };
             }
             
-            return Ok(_responseDTO);
+            return Ok(_responseDto);
         }
 
         // GET: api/Parts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ResponseDTO>> GetPart(Guid id)
+        public async Task<ActionResult<ResponseDto>> GetPart(Guid id)
         {
             try
             {
                 var part = await _partRepository.GetPart(id);
-                _responseDTO.Result = part;
-                _responseDTO.IsSuccess = _responseDTO.Result != null;
+                _responseDto.Result = part;
+                _responseDto.IsSuccess = _responseDto.Result != null;
             }
             catch (Exception exception) 
             {
-                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDto.ErrorMessages = new List<string> { exception.ToString() };
             }
 
-            if (!_responseDTO.IsSuccess) 
+            if (!_responseDto.IsSuccess) 
             {
-                _responseDTO.DisplayMessage = "PART NOT FOUND";
-                return NotFound(_responseDTO);
+                _responseDto.DisplayMessage = "PART NOT FOUND";
+                return NotFound(_responseDto);
             }
-            _responseDTO.DisplayMessage = "PART INFORMATION";
+            _responseDto.DisplayMessage = "PART INFORMATION";
 
-            return Ok(_responseDTO);
+            return Ok(_responseDto);
         }
 
         // PUT: api/Parts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPart(Guid id, UpdatePartDTO partFields)
+        public async Task<IActionResult> PutPart(Guid id, UpdatePartDto partFields)
         {
             try
             {
-                PartDTO? partResult = await _partRepository.UpdatePart(id, partFields);
-                _responseDTO.Result = partResult;
+                PartDto? partResult = await _partRepository.UpdatePart(id, partFields);
+                _responseDto.Result = partResult;
             }
             catch (Exception exception)
             {
-                _responseDTO.Result = null;
-                _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE UPDATING THE PART";
-                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDto.Result = null;
+                _responseDto.IsSuccess = false;
+                _responseDto.DisplayMessage = "AN ERROR OCCURRED WHILE UPDATING THE PART";
+                _responseDto.ErrorMessages = new List<string> { exception.ToString() };
             }
             
-            if (_responseDTO.Result != null)
+            if (_responseDto.Result != null)
             {
-                _responseDTO.IsSuccess = true;
-                _responseDTO.DisplayMessage = "PART UPDATED";
+                _responseDto.IsSuccess = true;
+                _responseDto.DisplayMessage = "PART UPDATED";
             }
             else
             {
-                _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "INVALID PARTID OR PART";
-                return BadRequest(_responseDTO);
+                _responseDto.IsSuccess = false;
+                _responseDto.DisplayMessage = "INVALID PARTID OR PART";
+                return BadRequest(_responseDto);
             }
 
-            return Ok(_responseDTO);
+            return Ok(_responseDto);
         }
 
         // POST: api/Parts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult> PostPart(CreatePartDTO part)
+        public async Task<ActionResult> PostPart(CreatePartDto part)
         {
             try
             {
-                PartDTO? partResult = await _partRepository.CreatePart(part);
-                _responseDTO.Result = partResult;
+                PartDto? partResult = await _partRepository.CreatePart(part);
+                _responseDto.Result = partResult;
                 if (partResult != null)
                 {
-                    _responseDTO.IsSuccess = true;
-                    _responseDTO.DisplayMessage = "PART ADDED";
+                    _responseDto.IsSuccess = true;
+                    _responseDto.DisplayMessage = "PART ADDED";
                 }
                 else
                 {
-                    _responseDTO.IsSuccess = false;
-                    _responseDTO.DisplayMessage = "INVALID PART";
+                    _responseDto.IsSuccess = false;
+                    _responseDto.DisplayMessage = "INVALID PART";
                 }
             }
             catch(Exception exception)
             {
-                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
-                _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "AN ERROR OCURRED WHILE ADDING THE PART";
+                _responseDto.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDto.IsSuccess = false;
+                _responseDto.DisplayMessage = "AN ERROR OCURRED WHILE ADDING THE PART";
             }
 
-            if (!_responseDTO.IsSuccess)
+            if (!_responseDto.IsSuccess)
             {
-                return BadRequest(_responseDTO);
+                return BadRequest(_responseDto);
             }
 
-            return Ok(_responseDTO);
+            return Ok(_responseDto);
         }
 
         // DELETE: api/Parts/5
@@ -150,57 +150,57 @@ namespace truckCity_api.Controllers
                 bool partIsDeleted = await _partRepository.DeletePart(id);
                 if (partIsDeleted)
                 {
-                    _responseDTO.Result = partIsDeleted;
-                    _responseDTO.IsSuccess = true;
-                    _responseDTO.DisplayMessage = "PART DELETED SUCCESFULLY";
+                    _responseDto.Result = partIsDeleted;
+                    _responseDto.IsSuccess = true;
+                    _responseDto.DisplayMessage = "PART DELETED SUCCESFULLY";
                 }
             }
             catch (Exception exception)
             {
-                _responseDTO.Result = false;
-                _responseDTO.IsSuccess = false;
-                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
-                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE TRYING TO DELETE THE PART";
+                _responseDto.Result = false;
+                _responseDto.IsSuccess = false;
+                _responseDto.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDto.DisplayMessage = "AN ERROR OCCURRED WHILE TRYING TO DELETE THE PART";
             }
 
-            if (_responseDTO.IsSuccess is false)
+            if (_responseDto.IsSuccess is false)
             {
-                return BadRequest(_responseDTO);
+                return BadRequest(_responseDto);
             }
             
-            return Ok(_responseDTO);
+            return Ok(_responseDto);
         }
 
         [HttpGet("replacement/")]
-        public async Task<IActionResult> GetReplacementParts([FromQuery]ReplacementPartsRequestDTO replacementPartsRequest)
+        public async Task<IActionResult> GetReplacementParts([FromQuery]ReplacementPartsRequestDto replacementPartsRequest)
         {
             try 
             {
                 var partList = await _partRepository.SearchPartsForReplacement(replacementPartsRequest.truckId, replacementPartsRequest.partCodes);
                 if (partList != null)
                 {
-                    _responseDTO.Result = partList;
-                    _responseDTO.DisplayMessage = "LIST OF PARTS";
-                    _responseDTO.IsSuccess = true;
+                    _responseDto.Result = partList;
+                    _responseDto.DisplayMessage = "LIST OF PARTS";
+                    _responseDto.IsSuccess = true;
                 }
                 else
                 {
-                    _responseDTO.Result = null;
-                    _responseDTO.DisplayMessage = "INVALID TRUCKID OR NAME LIST";
-                    _responseDTO.IsSuccess = false;
-                    return NotFound(_responseDTO);
+                    _responseDto.Result = null;
+                    _responseDto.DisplayMessage = "INVALID TRUCKID OR NAME LIST";
+                    _responseDto.IsSuccess = false;
+                    return NotFound(_responseDto);
                 }
             }
             catch (Exception exception)
             {
-                _responseDTO.Result = null;
-                _responseDTO.IsSuccess = false;
-                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
-                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING REPLACEMENT PARTS";
-                return NotFound(_responseDTO);
+                _responseDto.Result = null;
+                _responseDto.IsSuccess = false;
+                _responseDto.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDto.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING REPLACEMENT PARTS";
+                return NotFound(_responseDto);
             }
 
-            return Ok(_responseDTO);
+            return Ok(_responseDto);
         }
 
         [HttpPut("assign/{id}")]
@@ -208,30 +208,30 @@ namespace truckCity_api.Controllers
         {
             try
             {
-                PartDTO? partResult = await _partRepository.AssignOrUnassignTotruck(id, truckId);
-                _responseDTO.Result = partResult;
+                PartDto? partResult = await _partRepository.AssignOrUnassignTotruck(id, truckId);
+                _responseDto.Result = partResult;
             }
             catch (Exception exception)
             {
-                _responseDTO.Result = null;
-                _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE ASSIGNING THE PART TO TRUCK";
-                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDto.Result = null;
+                _responseDto.IsSuccess = false;
+                _responseDto.DisplayMessage = "AN ERROR OCCURRED WHILE ASSIGNING THE PART TO TRUCK";
+                _responseDto.ErrorMessages = new List<string> { exception.ToString() };
             }
 
-            if (_responseDTO.Result != null)
+            if (_responseDto.Result != null)
             {
-                _responseDTO.IsSuccess = true;
-                _responseDTO.DisplayMessage = "PART ASSIGNED";
+                _responseDto.IsSuccess = true;
+                _responseDto.DisplayMessage = "PART ASSIGNED";
             }
             else
             {
-                _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "INVALID PARTID OR TRUCKID";
-                return BadRequest(_responseDTO);
+                _responseDto.IsSuccess = false;
+                _responseDto.DisplayMessage = "INVALID PARTID OR TRUCKID";
+                return BadRequest(_responseDto);
             }
 
-            return Ok(_responseDTO);
+            return Ok(_responseDto);
         }
 
         [HttpGet("partStock/{code}")]
@@ -242,26 +242,26 @@ namespace truckCity_api.Controllers
                 var partStock = await _partRepository.SearchPartsByCode(code);
                 if (partStock != null)
                 {
-                    _responseDTO.DisplayMessage = "PART STOCK";
+                    _responseDto.DisplayMessage = "PART STOCK";
                 }
                 else
                 {
-                    _responseDTO.DisplayMessage = "NO STOCK FOR THE GIVEN CODE";
+                    _responseDto.DisplayMessage = "NO STOCK FOR THE GIVEN CODE";
                 }
-                _responseDTO.Result = partStock;
-                _responseDTO.IsSuccess = true;
+                _responseDto.Result = partStock;
+                _responseDto.IsSuccess = true;
             }
             catch (Exception exception)
             {
-                _responseDTO.Result = null;
-                _responseDTO.IsSuccess = false;
-                _responseDTO.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING FOR THE PART STOCK";
-                _responseDTO.ErrorMessages = new List<string> { exception.ToString() };
+                _responseDto.Result = null;
+                _responseDto.IsSuccess = false;
+                _responseDto.DisplayMessage = "AN ERROR OCCURRED WHILE SEARCHING FOR THE PART STOCK";
+                _responseDto.ErrorMessages = new List<string> { exception.ToString() };
 
-                return NotFound(_responseDTO);
+                return NotFound(_responseDto);
             }
 
-            return Ok(_responseDTO);
+            return Ok(_responseDto);
         }
     }
 }

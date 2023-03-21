@@ -8,8 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
-
 // Mapper Service
 IMapper mapper = MappingConfiguration.RegisterMaps().CreateMapper();
 builder.Services.AddSingleton(mapper);
@@ -23,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Repositories Services
 builder.Services.AddScoped<IPartRepository, PartRepository>();
 builder.Services.AddScoped<IPlantRepository, PlantRepository>();
+builder.Services.AddScoped<ITruckRepository, TruckRepository>();
 
 // Controllers Service
 builder.Services.AddControllers();

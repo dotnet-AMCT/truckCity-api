@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using truckCity_api.Models.DTO;
+using truckCity_api.Models.Dto;
 using truckCity_api.Models;
 
 
@@ -10,13 +10,13 @@ namespace truckCity_api.Repositories
 {
     public interface IPartRepository
     {
-        Task<IEnumerable<PartDTO>> GetPart();
-        Task<PartDTO> GetPart(Guid id);
-        Task<PartDTO?> CreatePart(CreatePartDTO createPartDTO);
-        Task<PartDTO?> UpdatePart(Guid id, UpdatePartDTO updatePartDTO);
+        Task<IEnumerable<PartDto>> GetPart();
+        Task<PartDto> GetPart(Guid id);
+        Task<PartDto?> CreatePart(CreatePartDto createPartDto);
+        Task<PartDto?> UpdatePart(Guid id, UpdatePartDto updatePartDto);
         Task<bool> DeletePart(Guid id);
-        Task<List<ReplacementPartDTO>?> SearchPartsForReplacement(Guid truckId, List<string> names);
-        Task<PartDTO?> AssignOrUnassignTotruck(Guid id, Guid? truckId);
+        Task<List<ReplacementPartDto>?> SearchPartsForReplacement(Guid truckId, List<string> names);
+        Task<PartDto?> AssignOrUnassignTotruck(Guid id, Guid? truckId);
         Task<PartStock?> SearchPartsByCode(string code);
     }
 }
