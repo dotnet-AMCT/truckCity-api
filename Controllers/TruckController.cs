@@ -71,7 +71,14 @@ namespace truckCity_api.Controllers
                 IsSold = truckDto.IsSold
             };
 
-            await _iTruckRepository.CreateTruckAsync(truck);
+            try
+            {
+                await _iTruckRepository.CreateTruckAsync(truck);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
             return CreatedAtAction(nameof(GetTruckAsync), new { id = truck.Id }, truck.AsDto());
         }
@@ -254,7 +261,7 @@ namespace truckCity_api.Controllers
 
                 if (existingPlant.CurrentCapacity == existingPlant.MaxCapacity)
                 {
-                    return BadRequest("The Plant in question is already full");
+                    return BadRequest(new { message = "The Plant in question is already full" });
                 }
 
                 if (existingTruck.PlantId is not null)

@@ -29,6 +29,8 @@ namespace truckCity_api.Repositories
 
         public async Task CreateTruckAsync(Truck truck)
         {
+            if (_context.Trucks.Any(x => x.LicencePlate == truck.LicencePlate))
+                throw new Exception("Truck with Licence Plate '" + truck.LicencePlate + "' already exists");
             await _context.Trucks.AddAsync(truck);
             _context.SaveChanges();
             await Task.CompletedTask;
