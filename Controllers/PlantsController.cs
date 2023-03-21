@@ -86,7 +86,6 @@ namespace truckCity_api.Controllers
             {
                 Name = plantDto.Name,
                 MaxCapacity = plantDto.MaxCapacity,
-                CurrentCapacity = plantDto.CurrentCapacity,
                 Address = plantDto.Address
             };
 

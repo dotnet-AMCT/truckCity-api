@@ -23,10 +23,12 @@ namespace truckCity_api.Controllers
     public class TruckController : ControllerBase
     {
         private readonly ITruckRepository _iTruckRepository;
+        private readonly IPlantRepository _iPlantRepository;
 
-        public TruckController(ITruckRepository iTruckRepository)
+        public TruckController(ITruckRepository iTruckRepository, IPlantRepository iPlantRepository)
         {
             _iTruckRepository = iTruckRepository;
+            _iPlantRepository = iPlantRepository;
         }
 
         // GET: api/Truck
@@ -117,7 +119,7 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
-            if (existingTruck.CompatiblePartCodes is null)
+            if (!existingTruck.CompatiblePartCodes.Any())
             {
                 existingTruck.CompatiblePartCodes = CompatiblePartCodes;
             }
@@ -148,7 +150,7 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
-            if (existingTruck.CompatiblePartCodes is null)
+            if (!existingTruck.CompatiblePartCodes.Any())
             {
                 return NoContent();
             }
@@ -179,7 +181,7 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
-            if (existingTruck.BrokenParts is null)
+            if (!existingTruck.BrokenParts.Any())
             {
                 existingTruck.BrokenParts = BrokenParts;
             }
@@ -210,7 +212,7 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
-            if (existingTruck.BrokenParts is null)
+            if (!existingTruck.BrokenParts.Any())
             {
                 return NoContent();
             }
@@ -241,10 +243,47 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
-            existingTruck.PlantId = PlantId; // import plant repository
+            if (PlantId.HasValue)
+            {
+                var existingPlant = await _iPlantRepository.GetPlantAsync(PlantId.Value);
+
+                if (existingPlant is null)
+                {
+                    return NotFound();
+                }
+
+                if (existingPlant.CurrentCapacity == existingPlant.MaxCapacity)
+                {
+                    return BadRequest("The Plant in question is already full");
+                }
+
+                if (existingTruck.PlantId is not null)
+                {
+                    var previousPlant = await _iPlantRepository.GetPlantAsync(existingTruck.PlantId.Value);
+                    previousPlant.CurrentCapacity -= 1;
+                    await _iPlantRepository.UpdatePlantAsync(previousPlant);
+                }
+
+                existingPlant.CurrentCapacity += 1;
+                existingTruck.Plant = existingPlant;
+                await _iPlantRepository.UpdatePlantAsync(existingPlant);
+            }
+            else
+            {
+                if (existingTruck.PlantId is null)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    var previousPlant = await _iPlantRepository.GetPlantAsync(existingTruck.PlantId.Value);
+                    previousPlant.CurrentCapacity -= 1;
+                    existingTruck.PlantId = PlantId;
+                    await _iPlantRepository.UpdatePlantAsync(previousPlant);
+                }
+            }
 
             await _iTruckRepository.UpdateTruckAsync(existingTruck);
-
             return NoContent();
         }
 

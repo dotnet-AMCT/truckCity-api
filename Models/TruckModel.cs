@@ -33,9 +33,9 @@ namespace truckCity_api.Models
 
         public Plant? Plant { get; set; } //foreign key to Plant
 
-        public List<string>? BrokenParts { get; set; } = null;
+        public List<string> BrokenParts { get; set; } = new();
 
-        public List<string>? CompatiblePartCodes { get; set; } = null;
+        public List<string> CompatiblePartCodes { get; set; } = new();
 
         public List<Part>? PartsForRepairment { get; set; }
     }

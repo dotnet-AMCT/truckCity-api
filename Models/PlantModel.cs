@@ -19,8 +19,7 @@ namespace truckCity_api.Models
         [Required]
         public uint MaxCapacity { get; set; }
 
-        [Required]
-        public uint CurrentCapacity { get; set; }
+        public uint CurrentCapacity { get; set; } = 0;
 
         [Required(AllowEmptyStrings = false)]
         public string Address { get; set; } = null!;    //(arg format)
