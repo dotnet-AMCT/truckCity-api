@@ -302,5 +302,20 @@ namespace truckCity_api.Controllers
 
             return NoContent();
         }
+
+        // GET: api/Truck
+        [HttpGet("toSell/")]
+        public async Task<ActionResult<IEnumerable<TruckDto>>> GetTrucksToSellAsync([FromQuery]FilterTrucksToSellDto filters)
+        {
+            IEnumerable<TruckDto> trucks = new List<TruckDto>();
+            var trucksToSell = await _iTruckRepository.GetTrucksToSell(filters);
+
+            if (trucksToSell is null)
+            {
+                return NotFound();
+            }
+
+            return ;
+        }
     }
 }

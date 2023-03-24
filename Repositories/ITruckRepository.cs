@@ -10,5 +10,6 @@ namespace truckCity_api.Repositories
         Task CreateTruckAsync(Truck truck);
         Task UpdateTruckAsync(Truck truck);
         Task DeleteTruckAsync(Guid id);
+        Task<List<TruckDto>?> GetTrucksToSell(FilterTrucksToSellDto filters);
     }
 }
