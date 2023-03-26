@@ -81,11 +81,6 @@ namespace truckCity_api.Controllers
                 return BadRequest(new { message = "Invalid Licence Plate field. Valid examples: 'AA123BB' or 'ERT631'" });
             }
 
-            if (truckDto.Year < 2000 || truckDto.Year > 2100)
-            {
-                return BadRequest(new { message = "Invalid Year field. The Year must be between 2000 and 2100." });
-            }
-
             if (truckDto.Kilometres.ToString().Length > 7)
             {
                 return BadRequest(new { message = "Invalid Kilometres field. A valid amount has a maximum of 7 digits" });
@@ -123,11 +118,6 @@ namespace truckCity_api.Controllers
             if (existingTruck is null)
             {
                 return NotFound();
-            }
-
-            if (truckDto.Year < 2000 || truckDto.Year > 2100)
-            {
-                return BadRequest(new { message = "Invalid Year field. The Year must be between 2000 and 2100." });
             }
 
             if (truckDto.Kilometres.HasValue && truckDto.Kilometres.Value.ToString().Length > 7)
