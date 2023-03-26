@@ -25,6 +25,20 @@ namespace truckCity_api.Controllers
     {
         private readonly ITruckRepository _iTruckRepository;
         private readonly IPlantRepository _iPlantRepository;
+        private readonly List<string> PartNames = new List<string> { "Radiator",
+                                                                    "Brake group",
+                                                                    "Engine",
+                                                                    "Front frame",
+                                                                    "Filters",
+                                                                    "Fuel system",
+                                                                    "Rear lights",
+                                                                    "Front lights",
+                                                                    "Number plate lights",
+                                                                    "Clutch",
+                                                                    "Rim",
+                                                                    "Right door",
+                                                                    "Left door",
+                                                                    "Windshield" };
 
         public TruckController(ITruckRepository iTruckRepository, IPlantRepository iPlantRepository)
         {
@@ -199,6 +213,14 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
+            foreach (string brokenPart in BrokenParts)
+            {
+                if (!PartNames.Contains(brokenPart))
+                {
+                    return BadRequest(new { message = $"Invalid Name Part: '{brokenPart}'"});
+                }
+            }
+
             if (!existingTruck.BrokenParts.Any())
             {
                 existingTruck.BrokenParts = BrokenParts;
@@ -228,6 +250,14 @@ namespace truckCity_api.Controllers
             if (existingTruck is null)
             {
                 return NotFound();
+            }
+
+            foreach (string brokenPart in BrokenParts)
+            {
+                if (!PartNames.Contains(brokenPart))
+                {
+                    return BadRequest(new { message = $"Invalid Name Part: '{brokenPart}'"});
+                }
             }
 
             if (!existingTruck.BrokenParts.Any())
