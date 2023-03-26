@@ -156,6 +156,14 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
+            foreach (string partCode in CompatiblePartCodes)
+            {
+                if (partCode.Length > 200 || !Regex.IsMatch(partCode, @"^[a-zA-Z0-9]+$"))
+                {
+                    return BadRequest(new { message = $"Invalid Part Code: '{partCode}'. A Maximum of 100 characters. Allowed characters: lowercase, uppercase and numbers" });
+                }
+            }
+
             if (!existingTruck.CompatiblePartCodes.Any())
             {
                 existingTruck.CompatiblePartCodes = CompatiblePartCodes;
@@ -185,6 +193,14 @@ namespace truckCity_api.Controllers
             if (existingTruck is null)
             {
                 return NotFound();
+            }
+
+            foreach (string partCode in CompatiblePartCodes)
+            {
+                if (partCode.Length > 200 || !Regex.IsMatch(partCode, @"^[a-zA-Z0-9]+$"))
+                {
+                    return BadRequest(new { message = $"Invalid Part Code: '{partCode}'. A Maximum of 100 characters. Allowed characters: lowercase, uppercase and numbers" });
+                }
             }
 
             if (!existingTruck.CompatiblePartCodes.Any())
