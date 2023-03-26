@@ -67,6 +67,11 @@ namespace truckCity_api.Controllers
                 return BadRequest(new { message = "Invalid Licence Plate. Valid examples: 'AA123BB' or 'ERT631'" });
             }
 
+            if (truckDto.Year < 2000 || truckDto.Year > 2100)
+            {
+                return BadRequest(new { message = "Invalid Year. Valid examples between 2000 and 2100" });
+            }
+
             Truck truck = new()
             {
                 LicencePlate = truckDto.LicencePlate.Replace(" ", "").ToUpper(),
