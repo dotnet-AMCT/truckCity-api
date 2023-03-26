@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -61,9 +62,14 @@ namespace truckCity_api.Controllers
         [HttpPost]
         public async Task<ActionResult<TruckDto>> CreateTruckAsync(CreateTruckDto truckDto)
         {
+            if (!Regex.IsMatch(truckDto.LicencePlate.Replace(" ", "").ToUpper(), @"[A-Z]{2}\d{3}[A-Z]{2}|[A-Z]{3}\d{3}$"))
+            {
+                return BadRequest(new { message = "Invalid Licence Plate. Valid examples: 'AA123BB' or 'ERT631'" });
+            }
+
             Truck truck = new()
             {
-                LicencePlate = truckDto.LicencePlate,
+                LicencePlate = truckDto.LicencePlate.Replace(" ", "").ToUpper(),
                 Brand = truckDto.Brand,
                 Model = truckDto.Model,
                 Year = truckDto.Year,
