@@ -305,54 +305,17 @@ namespace truckCity_api.Controllers
         [HttpPut("SetPlant/{id}")]
         public async Task<ActionResult> SetPlantIdAsync(Guid id, Guid? PlantId)
         {
-            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
-
-            if (existingTruck is null)
+            try
             {
-                return NotFound();
+                await _iTruckRepository.SetPlantIdAsync(id, PlantId);
             }
-
-            if (PlantId.HasValue)
+            catch (Exception ex)
             {
-                var existingPlant = await _iPlantRepository.GetPlantAsync(PlantId.Value);
-
-                if (existingPlant is null)
-                {
-                    return NotFound();
-                }
-
-                if (existingPlant.CurrentCapacity == existingPlant.MaxCapacity)
-                {
-                    return BadRequest(new { message = "The Plant in question is already full" });
-                }
-
-                if (existingTruck.PlantId is not null)
-                {
-                    var previousPlant = await _iPlantRepository.GetPlantAsync(existingTruck.PlantId.Value);
-                    previousPlant.CurrentCapacity -= 1;
-                    await _iPlantRepository.UpdatePlantAsync(previousPlant);
-                }
-
-                existingPlant.CurrentCapacity += 1;
-                existingTruck.Plant = existingPlant;
-                await _iPlantRepository.UpdatePlantAsync(existingPlant);
-            }
-            else
-            {
-                if (existingTruck.PlantId is null)
-                {
-                    return NoContent();
-                }
+                if (ex is ArgumentNullException)
+                    return NotFound(new { message = ex.Message });
                 else
-                {
-                    var previousPlant = await _iPlantRepository.GetPlantAsync(existingTruck.PlantId.Value);
-                    previousPlant.CurrentCapacity -= 1;
-                    existingTruck.PlantId = PlantId;
-                    await _iPlantRepository.UpdatePlantAsync(previousPlant);
-                }
+                    return BadRequest(new { message = ex.Message });
             }
-
-            await _iTruckRepository.UpdateTruckAsync(existingTruck);
             return NoContent();
         }
 

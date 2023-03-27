@@ -6,9 +6,11 @@ namespace truckCity_api.Repositories
     public interface ITruckRepository
     {
         Task<IEnumerable<Truck>> GetTrucksAsync();
-        Task<Truck> GetTruckAsync(Guid id);
+        Task<Truck?> GetTruckAsync(Guid id);
         Task CreateTruckAsync(Truck truck);
         Task UpdateTruckAsync(Truck truck);
         Task DeleteTruckAsync(Guid id);
+        Task SetPlantIdAsync(Guid id, Guid? PlantId);
+
     }
 }
