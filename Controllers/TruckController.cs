@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,20 @@ namespace truckCity_api.Controllers
     {
         private readonly ITruckRepository _iTruckRepository;
         private readonly IPlantRepository _iPlantRepository;
+        private readonly List<string> PartNames = new List<string> { "Radiator",
+                                                                    "Brake group",
+                                                                    "Engine",
+                                                                    "Front frame",
+                                                                    "Filters",
+                                                                    "Fuel system",
+                                                                    "Rear lights",
+                                                                    "Front lights",
+                                                                    "Number plate lights",
+                                                                    "Clutch",
+                                                                    "Rim",
+                                                                    "Right door",
+                                                                    "Left door",
+                                                                    "Windshield" };
 
         public TruckController(ITruckRepository iTruckRepository, IPlantRepository iPlantRepository)
         {
@@ -61,9 +76,19 @@ namespace truckCity_api.Controllers
         [HttpPost]
         public async Task<ActionResult<TruckDto>> CreateTruckAsync(CreateTruckDto truckDto)
         {
+            if (!Regex.IsMatch(truckDto.LicencePlate.Replace(" ", "").ToUpper(), @"[A-Z]{2}\d{3}[A-Z]{2}|[A-Z]{3}\d{3}$"))
+            {
+                return BadRequest(new { message = "Invalid Licence Plate field. Valid examples: 'AA123BB' or 'ERT631'" });
+            }
+
+            if (truckDto.Kilometres.ToString().Length > 7)
+            {
+                return BadRequest(new { message = "Invalid Kilometres field. A valid amount has a maximum of 7 digits" });
+            }
+
             Truck truck = new()
             {
-                LicencePlate = truckDto.LicencePlate,
+                LicencePlate = truckDto.LicencePlate.Replace(" ", "").ToUpper(),
                 Brand = truckDto.Brand,
                 Model = truckDto.Model,
                 Year = truckDto.Year,
@@ -71,7 +96,14 @@ namespace truckCity_api.Controllers
                 IsSold = truckDto.IsSold
             };
 
-            await _iTruckRepository.CreateTruckAsync(truck);
+            try
+            {
+                await _iTruckRepository.CreateTruckAsync(truck);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
 
             return CreatedAtAction(nameof(GetTruckAsync), new { id = truck.Id }, truck.AsDto());
         }
@@ -86,6 +118,11 @@ namespace truckCity_api.Controllers
             if (existingTruck is null)
             {
                 return NotFound();
+            }
+
+            if (truckDto.Kilometres.HasValue && truckDto.Kilometres.Value.ToString().Length > 7)
+            {
+                return BadRequest(new { message = "Invalid Kilometres field. A valid amount has a maximum of 7 digits" });
             }
 
             PropertyInfo[] truckDtoProperties = typeof(UpdateTruckDto).GetProperties();
@@ -119,6 +156,14 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
+            foreach (string partCode in CompatiblePartCodes)
+            {
+                if (partCode.Length > 200 || !Regex.IsMatch(partCode, @"^[a-zA-Z0-9]+$"))
+                {
+                    return BadRequest(new { message = $"Invalid Part Code: '{partCode}'. A Maximum of 100 characters. Allowed characters: lowercase, uppercase and numbers" });
+                }
+            }
+
             if (!existingTruck.CompatiblePartCodes.Any())
             {
                 existingTruck.CompatiblePartCodes = CompatiblePartCodes;
@@ -148,6 +193,14 @@ namespace truckCity_api.Controllers
             if (existingTruck is null)
             {
                 return NotFound();
+            }
+
+            foreach (string partCode in CompatiblePartCodes)
+            {
+                if (partCode.Length > 200 || !Regex.IsMatch(partCode, @"^[a-zA-Z0-9]+$"))
+                {
+                    return BadRequest(new { message = $"Invalid Part Code: '{partCode}'. A Maximum of 100 characters. Allowed characters: lowercase, uppercase and numbers" });
+                }
             }
 
             if (!existingTruck.CompatiblePartCodes.Any())
@@ -181,6 +234,14 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
+            foreach (string brokenPart in BrokenParts)
+            {
+                if (!PartNames.Contains(brokenPart))
+                {
+                    return BadRequest(new { message = $"Invalid Name Part: '{brokenPart}'"});
+                }
+            }
+
             if (!existingTruck.BrokenParts.Any())
             {
                 existingTruck.BrokenParts = BrokenParts;
@@ -212,6 +273,14 @@ namespace truckCity_api.Controllers
                 return NotFound();
             }
 
+            foreach (string brokenPart in BrokenParts)
+            {
+                if (!PartNames.Contains(brokenPart))
+                {
+                    return BadRequest(new { message = $"Invalid Name Part: '{brokenPart}'"});
+                }
+            }
+
             if (!existingTruck.BrokenParts.Any())
             {
                 return NoContent();
@@ -236,54 +305,17 @@ namespace truckCity_api.Controllers
         [HttpPut("SetPlant/{id}")]
         public async Task<ActionResult> SetPlantIdAsync(Guid id, Guid? PlantId)
         {
-            var existingTruck = await _iTruckRepository.GetTruckAsync(id);
-
-            if (existingTruck is null)
+            try
             {
-                return NotFound();
+                await _iTruckRepository.SetPlantIdAsync(id, PlantId);
             }
-
-            if (PlantId.HasValue)
+            catch (Exception ex)
             {
-                var existingPlant = await _iPlantRepository.GetPlantAsync(PlantId.Value);
-
-                if (existingPlant is null)
-                {
-                    return NotFound();
-                }
-
-                if (existingPlant.CurrentCapacity == existingPlant.MaxCapacity)
-                {
-                    return BadRequest("The Plant in question is already full");
-                }
-
-                if (existingTruck.PlantId is not null)
-                {
-                    var previousPlant = await _iPlantRepository.GetPlantAsync(existingTruck.PlantId.Value);
-                    previousPlant.CurrentCapacity -= 1;
-                    await _iPlantRepository.UpdatePlantAsync(previousPlant);
-                }
-
-                existingPlant.CurrentCapacity += 1;
-                existingTruck.Plant = existingPlant;
-                await _iPlantRepository.UpdatePlantAsync(existingPlant);
-            }
-            else
-            {
-                if (existingTruck.PlantId is null)
-                {
-                    return NoContent();
-                }
+                if (ex is ArgumentNullException)
+                    return NotFound(new { message = ex.Message });
                 else
-                {
-                    var previousPlant = await _iPlantRepository.GetPlantAsync(existingTruck.PlantId.Value);
-                    previousPlant.CurrentCapacity -= 1;
-                    existingTruck.PlantId = PlantId;
-                    await _iPlantRepository.UpdatePlantAsync(previousPlant);
-                }
+                    return BadRequest(new { message = ex.Message });
             }
-
-            await _iTruckRepository.UpdateTruckAsync(existingTruck);
             return NoContent();
         }
 
