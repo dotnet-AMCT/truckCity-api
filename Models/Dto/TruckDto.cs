@@ -14,15 +14,15 @@ namespace truckCity_api.Models.Dto
                             List<string>? CompatiblePartCodes);
 
     public record CreateTruckDto ([Required] string LicencePlate,
-                                  [Required] string Brand,
-                                  [Required] string Model,
-                                  [Required] uint Year,
+                                  [Required, MaxLength(100), MinLength(1)] string Brand,
+                                  [Required, MaxLength(100), MinLength(1)] string Model,
+                                  [Required, Range(2000, 2100)] uint Year,
                                   [Required] uint Kilometres,
                                   [Required] bool IsSold);
 
-    public record UpdateTruckDto (string? Brand = null,
-                                  string? Model = null,
-                                  uint? Year = null,
+    public record UpdateTruckDto ([MaxLength(100), MinLength(1)] string? Brand = null,
+                                  [MaxLength(100), MinLength(1)] string? Model = null,
+                                  [Range(2000,2100)] uint? Year = null,
                                   uint? Kilometres = null,
                                   bool? IsSold = null);
 }

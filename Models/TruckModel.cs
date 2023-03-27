@@ -12,7 +12,7 @@ namespace truckCity_api.Models
         public Guid Id { get; private set; }
 
         [Required]
-        public string LicencePlate { get; set; } = null!;    //(correct format);
+        public string LicencePlate { get; set; } = null!;
 
         [Required]
         public string Brand { get; set; } = null!;
