@@ -25,4 +25,10 @@ namespace truckCity_api.Models.Dto
                                   [Range(2000,2100)] uint? Year = null,
                                   uint? Kilometres = null,
                                   bool? IsSold = null);
+
+    public record FilterTrucksToSellDto (string? Brand = null,
+                                         string? Model = null,
+                                         uint? MinYear = null,
+                                         uint? MaxYear = null,
+                                         uint? Kilometers = null);
 }
