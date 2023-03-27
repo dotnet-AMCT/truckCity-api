@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Drawing2D;
 using truckCity_api.Data;
 using truckCity_api.Models;
 using truckCity_api.Models.Dto;
@@ -68,7 +69,10 @@ namespace truckCity_api.Repositories
                                                     t.Model,
                                                     t.Year,
                                                     t.Kilometres,
-                                                    t.PlantId
+                                                    t.IsSold,
+                                                    t.PlantId,
+                                                    t.BrokenParts,
+                                                    t.CompatiblePartCodes
                                                 })
                                              .ToListAsync();
 
@@ -98,7 +102,20 @@ namespace truckCity_api.Repositories
                         }
 
                         if (truckPassesTheFilter)
-                            trucksToSell.Add(_mapper.Map<TruckDto>(truck));
+                            trucksToSell.Add(
+                                new TruckDto(
+                                    truck.Id,
+                                    truck.LicencePlate,
+                                    truck.Brand,
+                                    truck.Model,
+                                    truck.Year,
+                                    truck.Kilometres,
+                                    truck.IsSold,
+                                    truck.PlantId,
+                                    truck.BrokenParts,
+                                    truck.CompatiblePartCodes
+                                )
+                            );
                     }
                 }
             }
